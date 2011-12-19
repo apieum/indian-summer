@@ -6,7 +6,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Context
+ * @package  Context/Template
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmContextTemplate.php
@@ -21,7 +21,7 @@ require_once implode(
  * a container and a method passed to constructor.
  *
  * @category Automne
- * @package  Context
+ * @package  Context/Template
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmContextTemplate

@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Abstracts
- * @package  Autoload
+ * @package  Autoload/Rules/Params
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleParamsAbstract.php
@@ -22,7 +22,7 @@
  *   when it's converted to string it returns a hash string from initials parameters
  * 
  * @category Abstracts
- * @package  Autoload
+ * @package  Autoload/Rules/Params
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleParamsAbstract

@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload
+ * @package  Autoload/Rules/Params
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleParams.php
@@ -35,7 +35,7 @@ require_once implode(
  *   it returns a hash from them when it's converted to string.
  * 
  * @category Automne
- * @package  Autoload
+ * @package  Autoload/Rules/Params
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleParams

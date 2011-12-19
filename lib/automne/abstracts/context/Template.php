@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Abstracts
- * @package  Context
+ * @package  Context/Template
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmContextTemplateAbstract.php
@@ -17,7 +17,7 @@
  * Uses regexp with 2 named masks
  *
  * @category Abstracts
- * @package  Context
+ * @package  Context/Template
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmContextTemplateAbstract

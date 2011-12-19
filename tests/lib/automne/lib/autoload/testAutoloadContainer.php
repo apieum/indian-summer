@@ -1,4 +1,16 @@
 <?php
+/**
+ * File testAutoloadContainer.php
+ *
+ * PHP version 5.2
+ *
+ * @category AutomneTests
+ * @package  Tests/Fixtures/Autoload
+ * @author   Gregory Salvan <gregory.salvan@apieum.com>
+ * @license  GPL v.2
+ * @link     testAutoloadContainer.php
+ *
+ */
 $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
 $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
@@ -8,7 +20,16 @@ require_once $baseDir.implode(
     DIRECTORY_SEPARATOR, 
     array('lib', 'automne', 'abstracts', 'autoload', 'Rule.php')
 );
-
+/**
+ * Fixture for autoload Container
+ * 
+ * @category Automne
+ * @package  Tests/Fixtures/Autoload
+ * @author   Gregory Salvan <gregory.salvan@apieum.com>
+ * @license  GPL v.2
+ * @link     testAutoloadContainer
+ *
+ */
 class testAutoloadContainer extends atmAutoloadRuleAbstract
 {
     
@@ -48,7 +69,7 @@ class testAutoloadContainer extends atmAutoloadRuleAbstract
      */
     public function whereIs($entity)
     {
-        return false;
+        return $entity;
     }
     /**
      * return the type of an entity (always default for this rule)
@@ -59,6 +80,6 @@ class testAutoloadContainer extends atmAutoloadRuleAbstract
      */
     public function whoIs($entity)
     {
-        return false;
+        return $entity;
     }
 }

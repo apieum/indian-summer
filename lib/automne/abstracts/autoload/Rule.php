@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Abstracts
- * @package  Autoload
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleAbstract.php
@@ -41,7 +41,7 @@
  * Override methods filter, initParams, whereIs and WhoIs to set a rule.
  * 
  * @category Abstracts
- * @package  Autoload
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleAbstract
