@@ -1,18 +1,17 @@
 <?php
 /**
- * File atmAutoloadDefaultRule.php
+ * File atmAutoloadRuleAbstract.php
  *
  * PHP version 5.2
  *
- * @category Automne
- * @package  Autoload
+ * @category Abstract
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmAutoloadDefaultRule.php
+ * @link     atmAutoloadRuleAbstract.php
  *
  */
 
-require_once __DIR__.DIRECTORY_SEPARATOR.'atmAutoloadRuleParams.php';
 
 /**
  * Default rule class
@@ -36,17 +35,19 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'atmAutoloadRuleParams.php';
  * this rule caches filtered entities names and paths with the container context.
  * There is 2 caches managed by parameters object.
  * 
- * @category Automne
- * @package  Autoload
+ * @category Abstract
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmAutoloadDefaultRule
+ * @link     atmAutoloadRuleAbstract
  *
  */
-class atmAutoloadDefaultRule
+abstract class atmAutoloadRuleAbstract
 {
+    const USE_CACHE = true;
     protected $context;
     protected $params;
+    
     /**
      * Constructor
      * 
@@ -67,10 +68,7 @@ class atmAutoloadDefaultRule
      * 
      * @return object sanitized parameters
      */
-    public static function initParams($context, $params)
-    {
-        return new atmAutoloadRuleParams(&$context, $params);
-    }
+    abstract public static function initParams($context, $params);
     /**
      * Initialise default parameters
      * Parameters are set in container
@@ -82,51 +80,46 @@ class atmAutoloadDefaultRule
         return $this->params;
     }
     /**
-     * Apply the filter to the entity name
-     *  
-     * @param string $entity the name to filter
+     * Return arguments glued with directory separator
      * 
-     * @return array the elements of entity name (result of preg_match by default)
+     * @return string
      */
-    
-    public function applyFilter($entity)
+    public static function implodePath()
     {
-        @preg_match($this->params->getFilter(), $entity, $return);
-        return $return;
+        $args = func_get_args();
+        return implode(DIRECTORY_SEPARATOR, $args);
     }
     /**
-     * Filter the entity name, store it to the cache and return it
-     *  
-     * @param string $entity the name to filter
-     * 
-     * @return array the elements of entity name (result of preg_match by default)
-     */
-    public function filter($entity)
-    {
-        $result=$this->applyFilter($entity);
-        $this->params->setFilterCache($entity, $result);
-        return $result;
-    }
-    /**
-     * Test whether this object can load the right file 
+     * Test whether this object can load the right file from cache
      * 
      * @param string $entity the entity name
      * 
      * @return bool whether this object know the entity
      */
-    public function know($entity)
+    public function cacheKnow($entity)
     {
-        return (
-            $this->params->getCache($entity)!==false
-            || (
-                ($filterCache=$this->params->getFilterCache($entity, false))!==false
-                && $filterCache != array()
-            )
-            || (
-                $filterCache == false
-                && $this->filter($entity) != array()
-            )
-        );
+        if ($this->params->getCache($entity)!==false) {
+            return true;
+        }
+        $filterCache = $this->params->getFilterCache($entity, false);
+        if ($filterCache !== false) {
+            return $filterCache !== array();
+        } else {
+            return $this->cacheFilter($entity) !== array();
+        }
+    }
+    /**
+     * filter an entity name and put it to cache
+     * 
+     * @param string $entity the entity name
+     * 
+     * @return array the result of filter
+     */
+    public function cacheFilter($entity)
+    {
+        $result = $this->filter($entity);
+        $this->params->setFilterCache($entity, $result);
+        return $result;
     }
     /**
      * Get the path from cache or create and cache it if not in cache
@@ -145,17 +138,33 @@ class atmAutoloadDefaultRule
         return $where;
     }
     /**
+     * Test whether this object can load the right file 
+     * 
+     * @param string $entity the entity name
+     * 
+     * @return bool whether this object know the entity
+     */
+    public function know($entity)
+    {
+        return $this->filter($entity) != array();
+    }
+    /**
+     * filter an entity name
+     * 
+     * @param string $entity entity name
+     * 
+     * @return array result of filter, if empty entity is not known
+     * 
+     */
+    abstract public function filter($entity);
+    /**
      * return the file name that contains the entity
      * 
      * @param string $entity an entity name (entity name, interface name...)
      * 
      * @return bool always false as this rule return only cached path by default
      */
-    public function whereIs($entity)
-    {
-        /// should be implemented in child
-        return false;
-    }
+    abstract public function whereIs($entity);
     /**
      * return the type of an entity (always default for this rule)
      * 
@@ -163,11 +172,7 @@ class atmAutoloadDefaultRule
      * 
      * @return string always the default type for this rule
      */
-    public function whoIs($entity)
-    {
-        /// should be implemented in child
-        return $this->params->getDefaultType();
-    }
+    abstract public function whoIs($entity);
     /**
      * This is the autoload default action, override to change
      * 
@@ -177,7 +182,11 @@ class atmAutoloadDefaultRule
      */
     public function load($entity) 
     {
-        if ($this->know($entity) && ($where=$this->cacheWhereIs($entity))!==false) {
+        if (self::USE_CACHE && $this->cacheKnow($entity)) {
+            $where = $this->cacheWhereIs($entity);
+            return (bool) @include_once $where;
+        } elseif ($this->know($entity)) {
+            $where = $this->whereIs($entity);
             return (bool) @include_once $where;
         }
         return false;

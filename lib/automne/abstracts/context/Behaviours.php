@@ -12,7 +12,7 @@
  *
  */
 
-require_once __DIR__.DIRECTORY_SEPARATOR.'atmContextAbstract.php';
+require_once __DIR__.DIRECTORY_SEPARATOR.'Context.php';
 /**
  * This class add behaviours to context.
  * A context behaviour is an aliased/named function, method or class,

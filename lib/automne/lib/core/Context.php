@@ -11,14 +11,11 @@
  * @link     atmCoreContext.php
  *
  */
-require_once __DIR__.DIRECTORY_SEPARATOR.'atmCoreContextTemplate.php';
-$contextBehaviours= implode(
+require_once __DIR__.DIRECTORY_SEPARATOR.'ContextTemplate.php';
+require_once implode(
     DIRECTORY_SEPARATOR,
-    array(
-    __DIR__, '..', '..', 'abstracts', 'context', 'atmContextBehavioursAbstract.php'
-    )
+    array(__DIR__, '..', '..', 'abstracts', 'context', 'Behaviours.php')
 );
-require_once $contextBehaviours;
 
 
 /**
@@ -38,7 +35,7 @@ require_once $contextBehaviours;
  * - creates objects within the context with 'construct' method. 
  *  
  * @category Automne
- * @package  Core
+ * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmCoreContext

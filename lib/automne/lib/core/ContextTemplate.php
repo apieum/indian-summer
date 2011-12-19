@@ -12,19 +12,16 @@
  * @link     atmCoreContextTemplate.php
  *
  */
-$contextTemplate= implode(
+require_once implode(
     DIRECTORY_SEPARATOR,
-    array(
-    __DIR__, '..', '..', 'abstracts', 'context', 'atmContextTemplateAbstract.php'
-    )
+    array(__DIR__, '..', '..', 'abstracts', 'context', 'Template.php')
 );
-require_once $contextTemplate;
 /**
  * A template class that retrieves datas from
  * a container and a method passed to constructor.
  *
  * @category Automne
- * @package  Core
+ * @package  ContextTemplate
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmCoreContextTemplate

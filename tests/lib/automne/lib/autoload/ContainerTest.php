@@ -12,11 +12,10 @@
  *
  */
 $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
-$fname=str_replace('Test', '', basename(__FILE__));
 $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
-require_once $baseDir.$relDir.$fname;
+require_once $baseDir.$relDir.'Container.php';
 
 /**
  * Test class for atmAutoloadContainer.
@@ -118,13 +117,13 @@ class atmAutoloadContainerTest extends PHPUnit_Framework_TestCase
         // set some options
         $this->object->context()->describe('rules path', __DIR__);
         $this->object->setRuleClassPrefix('testAutoload');
-        $this->object->setRuleFileExtension('.rule.php');
+        $this->object->setRuleFileExtension('.php');
         // test if options correctly sets
         $this->assertAttributeEquals('testAutoload', 'rulePrefix', $this->object);
         $object= $this->object->context()->getBehaviour('get rule class from type');
         $this->assertAttributeEquals('testAutoload', 'rulePrefix', $object[0]);
-        $this->assertAttributeEquals('rule.php', 'ruleFileExt', $this->object);
-        $this->assertAttributeEquals('rule.php', 'ruleFileExt', $object[0]);
+        $this->assertAttributeEquals('php', 'ruleFileExt', $this->object);
+        $this->assertAttributeEquals('php', 'ruleFileExt', $object[0]);
         $type = $this->object->getDefaultRuleClass('Container');
         $this->assertEquals('testAutoloadContainer', $type);
         // load

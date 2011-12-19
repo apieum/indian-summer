@@ -16,7 +16,7 @@ $fname=str_replace('Test', '', basename(__FILE__));
 $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
-require_once $baseDir.$relDir.$fname;
+require_once $baseDir.$relDir.'Context.php';
 /**
  * Test class for atmCoreContext.
  * 

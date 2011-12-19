@@ -17,7 +17,7 @@
  * Uses regexp with 2 named masks
  *
  * @category Abstract
- * @package  Context
+ * @package  ContextTemplate
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmContextTemplateAbstract
