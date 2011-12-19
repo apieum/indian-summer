@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Abstract
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleAbstract.php
@@ -14,29 +14,34 @@
 
 
 /**
- * Default rule class
+ * Rule class with cache
  * helps to include files required by entities: (abstract) classes, interfaces...
- * They are set by a container which register their method 'autoload' in autoloader.
- * A rule can answer if it know an entity and where is it's file.
- * Optionnaly it can return the generic type of an entity : library, view, stage... 
+ * They are set by a container which register their method 'load' in autoloader.
+ * A rule can :
+ * - filter an entity by this name, 
+ * - reply if an entity is known 
+ * - return where is the file to load
+ * - finally include the needed file. 
+ * Optionnaly it can return the type of an entity : library, view, stage... 
  * The autoload process start by asking if the entity is known, 
- * then where the entity file reside and then include the file. 
+ * then where the entity file resides and then includes the file. 
  * A rule depends on parameters and context.
  * This rule has 3 parameters :
  * <ul>
  * <li>base directory : a root path from where the search is done</li>
  * <li>filter : a string that help to retrieve informations from the entity name</li>
- * <li>default type : the default generic type of entities. 
- * Rules might have a 'whoIs' method, which return the type of an entity, 
- * if not found by whoIs default type is returned.
+ * <li>default type : the default generic type of entities, 
+ * if it can't be resolved by the whoIs method.
  * </li>
  * </ul>
  * As paths and managed entities can depend of a context, 
  * this rule caches filtered entities names and paths with the container context.
  * There is 2 caches managed by parameters object.
  * 
+ * Override methods filter, initParams, whereIs and WhoIs to set a rule.
+ * 
  * @category Abstract
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleAbstract
@@ -51,8 +56,8 @@ abstract class atmAutoloadRuleAbstract
     /**
      * Constructor
      * 
-     * @param object $context a context
-     * @param mixed  $params  parameters as array or atmAutoloadRuleParams
+     * @param object       $context a context
+     * @param array|object $params  parameters as array or atmAutoloadRuleParams
      */
     public function __construct($context, $params)
     {
@@ -70,8 +75,7 @@ abstract class atmAutoloadRuleAbstract
      */
     abstract public static function initParams($context, $params);
     /**
-     * Initialise default parameters
-     * Parameters are set in container
+     * Returns parameters of this object
      * 
      * @return object sanitized parameters
      */

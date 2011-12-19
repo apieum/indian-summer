@@ -16,11 +16,11 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Context.php';
 /**
  * This class add behaviours to context.
  * A context behaviour is an aliased/named function, method or class,
- * that benefit of descriptions and template replacements at call or construction.
+ * that benefits of descriptions and template replacements at call or construction.
  *  
  * Behaviours helps to :
  * - launch functions within the context with 'proceed' method.
- * - creates objects within the context with 'construct' method. 
+ * - create objects within the context with 'construct' method. 
  *  
  * @category Abstracts
  * @package  Context

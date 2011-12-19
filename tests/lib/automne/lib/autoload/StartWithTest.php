@@ -51,7 +51,7 @@ class atmAutoloadStartWithTest extends PHPUnit_Framework_TestCase
         $this->baseDir = $baseDir.'lib'.DIRECTORY_SEPARATOR.'automne';
         $this->libDir  = $baseDir.$relDir;
         $this->context = new atmCoreContext('startWith', 'test');
-        $this->object = new atmAutoloadStartWith($this->context, $this->params);
+        $this->object  = new atmAutoloadStartWith($this->context, $this->params);
     }
 
 

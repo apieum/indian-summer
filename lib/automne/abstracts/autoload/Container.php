@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Abstract
- * @package  Autoload/Container
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadContainerAbstract.php
@@ -27,7 +27,7 @@
  * </ul>
  * 
  * @category Abstract
- * @package  Autoload/Container
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadContainerAbstract

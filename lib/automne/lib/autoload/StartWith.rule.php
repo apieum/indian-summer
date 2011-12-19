@@ -20,26 +20,12 @@ $abstractRule= implode(
 require_once $abstractRule;
 
 /**
- * Default rule class
- * helps to include files required by entities: (abstract) classes, interfaces...
- * They are set by a container which register their method 'autoload' in autoloader.
- * A rule can answer if it know an entity and where is it's file.
- * Optionnaly it can return the generic type of an entity : library, view, stage... 
- * The autoload process start by asking if the entity is known, 
- * then where the entity file reside and then include the file. 
- * A rule depends on parameters and context.
- * This rule has 3 parameters :
- * <ul>
- * <li>base directory : a root path from where the search is done</li>
- * <li>filter : a string that help to retrieve informations from the entity name</li>
- * <li>default type : the default generic type of entities. 
- * Rules might have a 'whoIs' method, which return the type of an entity, 
- * if not found by whoIs default type is returned.
- * </li>
- * </ul>
- * As paths and managed entities can depend of a context, 
- * this rule caches filtered entities names and paths with the container context.
- * There is 2 caches managed by parameters object.
+ * This rule search for entities prepended by a given string.
+ * Entities names are identified by :
+ * - a prefix : helps to filter entities managed by this rule ('atm' for system)
+ * - a short name : the entity identity (ex. Container...) -> the file name
+ * - a package : the categorie of entity
+ * - optionaly a type (otherwise use default) : ex. abstracts, interfaces...  
  * 
  * @category Automne
  * @package  Autoload
@@ -50,8 +36,8 @@ require_once $abstractRule;
  */
 class atmAutoloadStartWith extends atmAutoloadRuleAbstract
 {
-    protected static $default = 'lib';
-    protected static $filter  = 'atm';
+    public static $default = 'lib';
+    public static $filter  = 'atm';
     /**
      * Initialise default parameters
      * Parameters are set in container
@@ -81,7 +67,7 @@ class atmAutoloadStartWith extends atmAutoloadRuleAbstract
      */
     public static function getStartFilter($start)
     {
-        return "@^${start}([A-Z][a-z_]+)?(([A-Z][a-z_]+)+)?([A-Z][a-z_]+)$@";
+        return '@^'.$start.'([A-Z][a-z_]+)?(([A-Z][a-z_]+)+)?([A-Z][a-z_]+)$@';
     }
     /**
      * return the filtered entity name
