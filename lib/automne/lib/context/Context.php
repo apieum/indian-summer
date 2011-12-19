@@ -1,14 +1,14 @@
 <?php
 /**
- * File atmCoreContext.php
+ * File atmContext.php
  *
  * PHP version 5.2
  *
  * @category Automne
- * @package  Core
+ * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContext.php
+ * @link     atmContext.php
  *
  */
 require_once __DIR__.DIRECTORY_SEPARATOR.'ContextTemplate.php';
@@ -38,10 +38,10 @@ require_once implode(
  * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContext
+ * @link     atmContext
  *
  */
-class atmCoreContext extends atmContextBehavioursAbstract
+class atmContext extends atmContextBehavioursAbstract
 {
-    protected $template='atmCoreContextTemplate';
+    protected $template='atmContextTemplate';
 }

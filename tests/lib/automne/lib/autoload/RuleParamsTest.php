@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category AutomneTests
- * @package  Autoload
+ * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleParams.php
@@ -16,13 +16,13 @@ $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
 require_once $baseDir.$relDir.'RuleParams.php';
-$cContext = implode(DIRECTORY_SEPARATOR, array('..', 'core', 'Context.php'));
+$cContext = implode(DIRECTORY_SEPARATOR, array('..', 'context', 'Context.php'));
 require_once $baseDir.$relDir.$cContext;
 /**
  * Tests for atmAutoloadRuleParams
  * 
  * @category AutomneTests
- * @package  Autoload
+ * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadRuleParamsTest
@@ -48,7 +48,7 @@ class atmAutoloadRuleParamsTest extends PHPUnit_Framework_TestCase
     {
         global $baseDir;
         $this->baseDir = realpath($baseDir);
-        $this->context= new atmCoreContext('subject', 'env');
+        $this->context= new atmContext('subject', 'env');
         $this->object = new atmAutoloadRuleParams($this->context, $this->params);
     }
 
@@ -115,7 +115,7 @@ class atmAutoloadRuleParamsTest extends PHPUnit_Framework_TestCase
      */
     public function canInstanciateParamsObjectsFromAnotherOne()
     {
-        $cContext = new atmCoreContext('rule param', 'tests');
+        $cContext = new atmContext('rule param', 'tests');
         $this->object
             ->setBaseDir($this->baseDir)
             ->setFilter('filter')
@@ -176,7 +176,7 @@ class atmAutoloadRuleParamsTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals($expect, $this->object->getCacheId());
         $this->context->into('env')->during('testing');
         $this->assertNotEquals($expect, $this->object->getCacheId());
-        $this->context->during(atmCoreContext::DEFAULT_MOMENT);
+        $this->context->during(atmContext::DEFAULT_MOMENT);
         $this->assertEquals($expect, $this->object->getCacheId());
     }
     /**

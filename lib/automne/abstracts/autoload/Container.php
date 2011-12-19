@@ -4,7 +4,7 @@
  *
  * PHP version 5.2
  *
- * @category Abstract
+ * @category Abstracts
  * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
@@ -26,7 +26,7 @@
  * <li>add context behaviours if not exists to resolve rules classes and files</li>
  * </ul>
  * 
- * @category Abstract
+ * @category Abstracts
  * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2

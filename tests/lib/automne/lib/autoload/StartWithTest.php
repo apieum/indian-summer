@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category AutomneTests
- * @package  Autoload
+ * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadStartWithTest.php
@@ -16,13 +16,13 @@ $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 require_once $baseDir.$relDir.'StartWith.rule.php';
 require_once $baseDir.$relDir
-    .implode(DIRECTORY_SEPARATOR, array('..', 'core', 'Context.php'));
+    .implode(DIRECTORY_SEPARATOR, array('..', 'context', 'Context.php'));
 
 /**
  * Test class for atmAutoloadStartWith.
  * 
  * @category AutomneTests
- * @package  Autoload
+ * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadStartWithTest
@@ -50,7 +50,7 @@ class atmAutoloadStartWithTest extends PHPUnit_Framework_TestCase
         global $baseDir, $relDir;
         $this->baseDir = $baseDir.'lib'.DIRECTORY_SEPARATOR.'automne';
         $this->libDir  = $baseDir.$relDir;
-        $this->context = new atmCoreContext('startWith', 'test');
+        $this->context = new atmContext('startWith', 'test');
         $this->object  = new atmAutoloadStartWith($this->context, $this->params);
     }
 

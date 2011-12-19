@@ -4,7 +4,7 @@
  *
  * PHP version 5.2
  *
- * @category Abstract
+ * @category Abstracts
  * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
@@ -21,7 +21,7 @@
  *   
  *   when it's converted to string it returns a hash string from initials parameters
  * 
- * @category Abstract
+ * @category Abstracts
  * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2

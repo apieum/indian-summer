@@ -4,7 +4,7 @@
  *
  * PHP version 5.2
  *
- * @category Abstract
+ * @category Abstracts
  * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
@@ -20,7 +20,7 @@
  * in subject, environment or moment.
  * Replacements are made with a template system.
  * 
- * @category Abstract
+ * @category Abstracts
  * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2

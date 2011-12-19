@@ -4,7 +4,7 @@
  *
  * PHP version 5.2
  *
- * @category Abstract
+ * @category Abstracts
  * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
@@ -40,7 +40,7 @@
  * 
  * Override methods filter, initParams, whereIs and WhoIs to set a rule.
  * 
- * @category Abstract
+ * @category Abstracts
  * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2

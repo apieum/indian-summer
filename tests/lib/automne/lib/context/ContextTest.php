@@ -1,14 +1,14 @@
 <?php
 /**
- * File atmCoreContextTests.php
+ * File atmContextTests.php
  *
  * PHP version 5.2
  *
  * @category AutomneTests
- * @package  Core
+ * @package  Tests/Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContext.php
+ * @link     atmContext.php
  *
  */
 $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
@@ -21,22 +21,21 @@ require_once $baseDir.$relDir.'Context.php';
  * Test class for atmCoreContext.
  * 
  * @category AutomneTests
- * @package  Core
+ * @package  Tests/Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContextTest
+ * @link     atmContextTest
  *
  */
-class atmCoreContextTest extends PHPUnit_Framework_TestCase
+class atmContextTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var atmCoreContext
+     * @var atmContext
      */
     protected $context;
 
     /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
+     * Sets up the fixture.
      * 
      * @return null
      */
@@ -44,7 +43,7 @@ class atmCoreContextTest extends PHPUnit_Framework_TestCase
     {
         $this->fixSubject = "{Subject}";
         $this->fixEnv     = "{Environment}";
-        $this->context = new atmCoreContext($this->fixSubject, $this->fixEnv);
+        $this->context = new atmContext($this->fixSubject, $this->fixEnv);
     }
     /**
      * a context depends on subject, environment and moment
@@ -56,7 +55,7 @@ class atmCoreContextTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals($this->fixSubject, $this->context->what());
         $this->assertEquals($this->fixEnv, $this->context->where());
-        $this->assertEquals(atmCoreContext::DEFAULT_MOMENT, $this->context->when());
+        $this->assertEquals(atmContext::DEFAULT_MOMENT, $this->context->when());
     }
 
     /**
@@ -83,7 +82,7 @@ class atmCoreContextTest extends PHPUnit_Framework_TestCase
      */
     public function contextIdentityDependsOnContextProperties()
     {
-        $expected = new atmCoreContext($this->fixSubject, $this->fixEnv);
+        $expected = new atmContext($this->fixSubject, $this->fixEnv);
         $this->assertEquals($expected->identify(), $this->context->identify());
     }
     /**

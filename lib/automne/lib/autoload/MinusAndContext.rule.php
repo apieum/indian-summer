@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     MinusAndContext.rule.php
@@ -34,7 +34,7 @@ require_once $abstractRule;
  * so will find 10-LoadConstant.php or 10.1-LoadConstant.php... 
  * 
  * @category Automne
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadMinusAndContext

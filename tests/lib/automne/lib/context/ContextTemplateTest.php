@@ -1,15 +1,15 @@
 <?php
 
 /**
- * File atmCoreContextTests.php
+ * File atmContextTests.php
  *
  * PHP version 5.2
  *
  * @category AutomneTests
- * @package  Core
+ * @package  Tests/Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContext.php
+ * @link     atmContext.php
  *
  */
 $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
@@ -19,19 +19,19 @@ $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 require_once $baseDir.$relDir.'ContextTemplate.php';
 
 /**
- * Test class for atmCoreContextTemplate.
+ * Test class for atmContextTemplate.
  * 
  * @category AutomneTests
- * @package  Core
+ * @package  Tests/Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContextTest
+ * @link     atmContextTest
  *
  */
-class atmCoreContextTemplateTest extends PHPUnit_Framework_TestCase
+class atmContextTemplateTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var atmCoreContextTemplate
+     * @var atmContextTemplate
      */
     protected $object;
 
@@ -42,7 +42,7 @@ class atmCoreContextTemplateTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new atmCoreContextTemplate('context', 'getter');
+        $this->object = new atmContextTemplate('context', 'getter');
     }
 
     /**

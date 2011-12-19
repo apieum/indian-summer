@@ -13,7 +13,7 @@
  */
 
 require_once 
-    implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'core', 'Context.php'));
+    implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', 'context', 'Context.php'));
 require_once implode(
     DIRECTORY_SEPARATOR,
     array(__DIR__, '..', '..', 'abstracts', 'autoload', 'Container.php')
@@ -36,7 +36,7 @@ class atmAutoloadContainer extends atmAutoloadContainerAbstract
 {
     protected $rulePrefix   = 'atmAutoload';
     protected $ruleFileExt  = 'rule.php';
-    protected $context = 'atmCoreContext';
+    protected $context = 'atmContext';
     
     /**
      * Default function called to find the file of a class containing a rule

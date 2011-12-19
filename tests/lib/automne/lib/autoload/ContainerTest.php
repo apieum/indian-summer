@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category AutomneTests
- * @package  Autoload
+ * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadContainer.php
@@ -21,7 +21,7 @@ require_once $baseDir.$relDir.'Container.php';
  * Test class for atmAutoloadContainer.
  * 
  * @category AutomneTests
- * @package  Autoload
+ * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     atmAutoloadContainer

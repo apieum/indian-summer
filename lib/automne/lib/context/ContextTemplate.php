@@ -1,15 +1,15 @@
 <?php
 
 /**
- * File atmCoreContextTemplate.php
+ * File atmContextTemplate.php
  *
  * PHP version 5.2
  *
  * @category Automne
- * @package  Core
+ * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContextTemplate.php
+ * @link     atmContextTemplate.php
  *
  */
 require_once implode(
@@ -21,13 +21,13 @@ require_once implode(
  * a container and a method passed to constructor.
  *
  * @category Automne
- * @package  ContextTemplate
+ * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     atmCoreContextTemplate
+ * @link     atmContextTemplate
  *
  */
-class atmCoreContextTemplate extends atmContextTemplateAbstract
+class atmContextTemplate extends atmContextTemplateAbstract
 {
     protected $globalPattern = '@(?<!\\\)\{(?<datas>([^{}]+ | (?R))*)(?<!\\\)\}@xm';
     protected $strictPattern = '@^((?<!\\\)\{)(?<datas>[^{}]+)((?<!\\\)\})$@xm';

@@ -4,7 +4,7 @@
  *
  * PHP version 5.2
  *
- * @category Abstract
+ * @category Abstracts
  * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
@@ -16,7 +16,7 @@
  * a container and a method passed to constructor.
  * Uses regexp with 2 named masks
  *
- * @category Abstract
+ * @category Abstracts
  * @package  Context
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
