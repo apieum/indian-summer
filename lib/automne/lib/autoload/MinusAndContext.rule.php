@@ -101,7 +101,7 @@ class atmAutoloadMinusAndContext extends atmAutoloadRuleAbstract
             $search = self::implodePath(
                 $this->params->getBaseDir(),
                 $this->whoIs($entity),
-            	'*-'.$this->getName($entity).'.php'
+                '*-'.$this->getName($entity).'.php'
             );
             $result=glob($search);
             return count($result)>0 ? realpath($result[0]) : false;
