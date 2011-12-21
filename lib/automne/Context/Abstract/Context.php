@@ -35,7 +35,6 @@ abstract class ATM_Context_Abstract
     protected $environment;
     protected $moment;
     protected $descriptions= array();
-    protected $template;
     /**
      * Constructor
      * 
@@ -45,8 +44,6 @@ abstract class ATM_Context_Abstract
      */
     public function __construct($subject, $environment, $moment=self::DEFAULT_MOMENT)
     {
-        $tplClass = $this->template;
-        $this->template = new $tplClass($this, 'about');
         $this->with(&$subject)->into(&$environment)->during(&$moment);
     }
     /**
@@ -69,20 +66,6 @@ abstract class ATM_Context_Abstract
     public function what()
     {
         return $this->normalize($this->subject);
-    }
-    /**
-     * Give an hash that identify the current context
-     * 
-     * @return string a hash of contextual properties
-     */
-    public function identify()
-    {
-        return md5(
-            serialize($this->subject)
-            .serialize($this->environment)
-            .serialize($this->moment)
-            .serialize($this->descriptions)
-        );
     }
     /**
      * Set the context environment
@@ -136,8 +119,7 @@ abstract class ATM_Context_Abstract
      */
     public function describe($what, $value)
     {
-        
-        $this->descriptions[$what] = $value;
+        $this->descriptions[$what] =& $value;
         return $this;
     }
     /**
@@ -162,13 +144,26 @@ abstract class ATM_Context_Abstract
      */
     public function about($what, $default='')
     {
+        return $this->normalize($this->aboutStatic($what, $default));
+    }
+    /**
+     * retrieve informations about context without normalize them
+     * 
+     * @param string $what    the name of a context property
+     * @param mixed  $default the default value if a property not exists
+     * 
+     * @return mixed a description or default
+     */
+    public function &aboutStatic($what, $default='')
+    {
         if (isset($this->descriptions[$what])) { 
-            $default = $this->descriptions[$what];
+            $default =& $this->descriptions[$what];
         }
-        return $this->normalize($default);
+        return $default;
     }
     /**
      * retrieve datas values depending on context properties defined in description
+     * override in child to provide changes on datas.
      * 
      * @param mixed $datas the datas to normalize
      * 
@@ -176,6 +171,6 @@ abstract class ATM_Context_Abstract
      */
     public function normalize($datas)
     {
-        return $this->template->apply($datas);
+        return $datas;
     }
 }

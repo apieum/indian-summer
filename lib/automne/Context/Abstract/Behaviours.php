@@ -32,24 +32,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Context.php';
 
 abstract class ATM_Context_Behaviours_Abstract extends ATM_Context_Abstract
 {
-    const DEFAULT_MOMENT = 10;
     protected $behaviours= array();
 
-    /**
-     * Give an hash that identify the current context
-     * 
-     * @return string a hash of contextual properties
-     */
-    public function identify()
-    {
-        return md5(
-            serialize($this->subject)
-            .serialize($this->environment)
-            .serialize($this->moment)
-            .serialize($this->behaviours)
-            .serialize($this->descriptions)
-        );
-    }
     /**
      * For Functions and Classes that depends on context, you can add behaviours
      * to call functions or create objects within the context.
@@ -140,13 +124,13 @@ abstract class ATM_Context_Behaviours_Abstract extends ATM_Context_Abstract
      * 
      * @return mixed the result of a function call or an objet
      */
-    public function proceedOnce($name, $args=array())
+    public function &proceedOnce($name, $args=array())
     {
         $identity = "$name with ".serialize($args);
         if (!isset($this->descriptions[$identity])) {
             $this->describe($identity, $this->proceed($name, $args));
         }
-        return $this->about($identity);
+        return $this->descriptions[$identity];
     }
     /**
      * Return if a behaviour is a class
@@ -157,7 +141,8 @@ abstract class ATM_Context_Behaviours_Abstract extends ATM_Context_Abstract
      */
     public function isClass($name)
     {
-        return $this->isCallable($name) == false;
+        $behaviour = $this->getBehaviour($name);
+        return is_string($behaviour) && class_exists($behaviour, true);
     }
     /**
      * Return if a behaviour is callable : method or function
@@ -168,7 +153,6 @@ abstract class ATM_Context_Behaviours_Abstract extends ATM_Context_Abstract
      */
     public function isCallable($name)
     {
-        $behaviour = $this->getBehaviour($name);
-        return is_callable($behaviour);
+        return is_callable($this->getBehaviour($name));
     }
 }

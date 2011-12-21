@@ -393,6 +393,57 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($myObject instanceof ArrayObject);
         $this->assertEquals('default', $myObject[0]);
     }
+    /**
+     * contexts help to share objects
+     * 
+     * @test
+     * @return null
+     */
+    public function contextsHelpToShareObjects()
+    {
+        $this->context->describe('myObject',  'stdClass');
+        $this->context->addBehaviour('testObject', '{myObject}');
+        $myObject1 = $this->context->proceedOnce('testObject');
+        $this->assertTrue($myObject1 instanceof stdClass);
+        $myObject1->property    = 'property'; 
+        $myObject1->hasProperty = true;
+        $myObject2 = $this->context->proceedOnce('testObject');
+        $this->assertTrue($myObject2->hasProperty);
+        $this->assertEquals('property', $myObject2->property);
+        $this->assertSame($myObject1, $myObject2);
+    }
+    /**
+     * know wether behaviours are classes or not
+     * 
+     * @test
+     * @return null
+     */
+    public function knowWetherBehavioursAreClassesOrNot()
+    {
+        // test with system functions
+        $this->context->addBehaviour('behaviour', '{myBehaviour}');
+        $this->context->describe('myBehaviour',  'ucfirst');
+        $this->assertFalse($this->context->isClass('behaviour'));
+        $this->assertTrue($this->context->isCallable('behaviour'));
+        // test with system class
+        $this->context->describe('myBehaviour',  'stdClass');
+        $this->assertTrue($this->context->isClass('behaviour'));
+        $this->assertFalse($this->context->isCallable('behaviour'));
+        // test with lambda function
+        $func = create_function('', 'return true;');
+        $this->context->describe('myBehaviour',  $func);
+        $this->assertFalse($this->context->isClass('behaviour'));
+        $this->assertTrue($this->context->isCallable('behaviour'));
+        // test with user class
+        $this->context->describe('myBehaviour',  'ATM_ContextTest');
+        $this->assertTrue($this->context->isClass('behaviour'));
+        $this->assertFalse($this->context->isCallable('behaviour'));
+        // test with method
+        $this->context->describe('myBehaviour',  array($this, 'normalize'));
+        $this->assertFalse($this->context->isClass('behaviour'));
+        $this->assertTrue($this->context->isCallable('behaviour'));
+    }
+    
 
 }
 ?>

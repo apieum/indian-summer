@@ -16,7 +16,7 @@ $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
 $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
-require_once $baseDir.$relDir.'ContextTemplate.php';
+require_once $baseDir.$relDir.'Template.php';
 
 /**
  * Test class for ATM_Context_Template.
