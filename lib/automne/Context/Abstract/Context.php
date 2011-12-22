@@ -44,7 +44,24 @@ abstract class ATM_Context_Abstract
      */
     public function __construct($subject, $environment, $moment=self::DEFAULT_MOMENT)
     {
-        $this->with(&$subject)->into(&$environment)->during(&$moment);
+        $this
+            ->with(&$subject)
+            ->into(&$environment)
+            ->during(&$moment);
+    }
+    /**
+     * Give an hash that identify the current context
+     * 
+     * @return string a hash of contextual properties
+     */
+    public function identify()
+    {
+        return md5(
+            serialize($this->subject)
+            .serialize($this->environment)
+            .serialize($this->moment)
+            .serialize($this->descriptions)
+        );
     }
     /**
      * Set the context subject 
@@ -169,8 +186,5 @@ abstract class ATM_Context_Abstract
      * 
      * @return mixed normalized datas
      */
-    public function normalize($datas)
-    {
-        return $datas;
-    }
+    abstract public function normalize($datas);
 }

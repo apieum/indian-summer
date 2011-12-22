@@ -35,6 +35,21 @@ abstract class ATM_Context_Behaviours_Abstract extends ATM_Context_Abstract
     protected $behaviours= array();
 
     /**
+     * Give an hash that identify the current context
+     * 
+     * @return string a hash of contextual properties
+     */
+    public function identify()
+    {
+        return md5(
+            serialize($this->subject)
+            .serialize($this->environment)
+            .serialize($this->moment)
+            .serialize($this->behaviours)
+            .serialize($this->descriptions)
+        );
+    }
+    /**
      * For Functions and Classes that depends on context, you can add behaviours
      * to call functions or create objects within the context.
      * This method add a behaviour associated to a name.
@@ -114,6 +129,7 @@ abstract class ATM_Context_Behaviours_Abstract extends ATM_Context_Abstract
             );
         }
     }
+
     /**
      * Identical as proceed but store result in descriptions 
      * and return it as is if exists. 

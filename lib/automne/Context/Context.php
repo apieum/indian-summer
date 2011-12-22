@@ -41,6 +41,7 @@ require_once
  */
 class ATM_Context extends ATM_Context_Behaviours_Abstract
 {
+    public static $templateClass = 'ATM_Context_Template';
     protected $template;
     /**
      * Constructor
@@ -51,8 +52,12 @@ class ATM_Context extends ATM_Context_Behaviours_Abstract
      */
     public function __construct($subject, $environment, $moment=self::DEFAULT_MOMENT)
     {
-        $this->template = new ATM_Context_Template($this, 'about');
-        $this->with(&$subject)->into(&$environment)->during(&$moment);
+        $templateClass  = self::$templateClass;
+        $this->template = new $templateClass($this, 'about');
+        $this
+            ->with(&$subject)
+            ->into(&$environment)
+            ->during(&$moment);
     }
     /**
      * Clean datas with template
@@ -64,20 +69,5 @@ class ATM_Context extends ATM_Context_Behaviours_Abstract
     public function normalize($datas)
     {
         return $this->template->apply($datas);
-    }
-    /**
-     * Give an hash that identify the current context
-     * 
-     * @return string a hash of contextual properties
-     */
-    public function identify()
-    {
-        return md5(
-            serialize($this->subject)
-            .serialize($this->environment)
-            .serialize($this->moment)
-            .serialize($this->behaviours)
-            .serialize($this->descriptions)
-        );
     }
 }
