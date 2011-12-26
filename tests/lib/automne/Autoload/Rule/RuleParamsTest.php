@@ -16,8 +16,6 @@ $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
 require_once $baseDir.$relDir.'RuleParams.php';
-require_once 
-    $baseDir.$relDir.implode(DIRECTORY_SEPARATOR, array('..', 'Context', 'Context.php'));
 /**
  * Tests for ATM_Autoload_RuleParams
  * 
@@ -34,8 +32,6 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
      * @var ATM_Autoload_RuleParams
      */
     protected $object;
-    protected $context;
-    protected $params=array(__DIR__, '@.*@', 'lib');
     protected $baseDir;
 
     /**
@@ -48,8 +44,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     {
         global $baseDir;
         $this->baseDir = realpath($baseDir);
-        $this->context= new ATM_Context('subject', 'env');
-        $this->object = new ATM_Autoload_RuleParams($this->context, $this->params);
+        $this->object = new ATM_Autoload_RuleParams(__DIR__, '@.*@', 'lib');
     }
 
     /**
@@ -93,39 +88,20 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Params have an identity based on initials values
+     * can merge params objects
      * 
      * @test
      * @return null
      */
-    public function paramsHaveAnIdentityBasedOnInitialsValues()
+    public function canMergeParamsObjects()
     {
-        $expect = strval($this->object);
-        $this->object
-            ->setBaseDir($this->baseDir)
-            ->setFilter('filter')
-            ->setDefaultType('type');
-        $this->assertEquals($expect, strval($this->object));
-    }
-    /**
-     * can instanciate params objects from another one
-     * 
-     * @test
-     * @return null
-     */
-    public function canInstanciateParamsObjectsFromAnotherOne()
-    {
-        $cContext = new ATM_Context('rule param', 'tests');
-        $this->object
-            ->setBaseDir($this->baseDir)
-            ->setFilter('filter')
-            ->setDefaultType('type');
-        $newParams = new ATM_Autoload_RuleParams($cContext, $this->object);
-        $this->assertNotEquals(strval($this->object), strval($newParams));
+        $newParams = new ATM_Autoload_RuleParams($this->baseDir, 'filter', 'type');
+        $this->assertNotEquals($this->object, $newParams);
+        $newParams->merge($this->object);
         $this->assertEquals($this->object->getBaseDir(), $newParams->getBaseDir());
         $this->assertEquals($this->object->getFilter(), $newParams->getFilter());
-        $this->assertEquals('type', $newParams->getDefaultType());
-        $this->assertNotEquals($this->object, $newParams);
+        $this->assertEquals($this->object->getDefaultType(), $newParams->getDefaultType());
+        $this->assertEquals($this->object, $newParams);
         
     }
     /**
@@ -146,7 +122,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * can set filter cache once with get and default
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function canSetFilterCacheOnceWithGetAndDefault()
@@ -164,7 +140,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * Params cache identity depends on context
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function paramsCacheIdentityDependsOnContext()
@@ -182,7 +158,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * params manages filter cache results
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function paramsManageFilterCacheResults()
@@ -196,7 +172,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * filter cache depends on context
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function filterCacheDependsOnContext()
@@ -209,7 +185,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * filter cache is cleared when setting params
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function filterCacheIsClearedWhenSettingParams()
@@ -222,7 +198,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * params manages paths cache
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function paramsManagePathsCache()
@@ -234,7 +210,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * paths cache depends on context
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function pathsCacheDependsOnContext()
@@ -247,7 +223,7 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
     /**
      * paths cache is cleared when setting params
      * 
-     * @test
+     * @ test
      * @return null
      */
     public function pathsCacheIsClearedWhenSettingParams()

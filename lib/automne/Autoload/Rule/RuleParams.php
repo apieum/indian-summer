@@ -5,45 +5,46 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload/Rules/Params
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_RuleParams.php
  *
  */
-require_once 
-    implode(DIRECTORY_SEPARATOR, array(__DIR__, 'Abstract', 'RuleParams.php'));
+
 /**
- * Manage Rule parameters within context
- * To resolve paths to load required files, rules have parameters.
- * This class permit to manage these parameters.
- * By default a rule has 3 parameters :
+ * Manage Rule parameters.
+ * It has 3 parameters :
  * - base directory : the directory from where find files
  * - filter : a filter that match class names to test wether the rule know an entity
  * - default type : value returned when whois method can't resolve an entity type
- * 
- * To provide a more efficient paths resolution, this class manages 2 caches :
- * - a filter cache : store filter results
- * - a paths cache : store file paths resolutions
- * 
- *   Caches depends on context subject, environment and moment 
- *   and are cleared when setting a new value to properties.
- *   
- *   Finally to retrieve a params object from initials parameters, 
- *   it returns a hash from them when it's converted to string.
- * 
+ *  
  * @category Automne
- * @package  Autoload/Rules/Params
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_RuleParams
  *
  */
-class ATM_Autoload_RuleParams extends ATM_Autoload_RuleParams_Abstract
+class ATM_Autoload_RuleParams
 {
     protected $filter;
     protected $baseDir;
     protected $default;
+    /**
+     * Constructor 
+     * 
+     * @param string $baseDir the base directory from where find classes
+     * @param string $filter  the filter applied by 'know' on classes names
+     * @param string $default the default type of entities
+     */
+    public function __construct($baseDir=null, $filter=null, $default=null)
+    {
+        $this
+            ->setBaseDir($baseDir)
+            ->setFilter($filter)
+            ->setDefaultType($default);
+    }
     /**
      * set baseDir, filter and default from the given argument
      * 
@@ -80,10 +81,9 @@ class ATM_Autoload_RuleParams extends ATM_Autoload_RuleParams_Abstract
     public function setBaseDir($baseDir=null) 
     {
         if (is_null($baseDir)) {
-            $baseDir = implode(DIRECTORY_SEPARATOR, array(__DIR__, '..'));
+            $baseDir = implode(DIRECTORY_SEPARATOR, array(__DIR__, '..', '..'));
         }
         $this->baseDir = realpath($baseDir);
-        $this->clearCache();
         return $this;
     }
     /**
@@ -106,7 +106,6 @@ class ATM_Autoload_RuleParams extends ATM_Autoload_RuleParams_Abstract
     public function setFilter($filter)
     {
         $this->filter=$filter;
-        $this->clearCache();
         return $this;
     }
     /**
@@ -132,7 +131,6 @@ class ATM_Autoload_RuleParams extends ATM_Autoload_RuleParams_Abstract
     public function setDefaultType($default)
     {
         $this->default=$default;
-        $this->clearCache();
         return $this;
     }
     /**

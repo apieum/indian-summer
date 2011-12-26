@@ -21,7 +21,7 @@
  * @link     testPackageStartWith
  *
  */
-class testPackageStartWith
+class test_Package_StartWith
 {
     
 }

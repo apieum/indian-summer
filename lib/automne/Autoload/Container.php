@@ -32,35 +32,72 @@ require_once
  */
 class ATM_Autoload_Container extends ATM_Autoload_Container_Abstract
 {
-    protected $rulePrefix   = 'ATM_Autoload';
-    protected $ruleFileExt  = 'rule.php';
+    protected $rulePrefix   = 'ATM_Autoload_';
+    protected $ruleSuffix   = '_Rule';
+    protected $ruleFileExt  = 'php';
     protected $context = 'ATM_Context';
-    
+    /**
+     * Constructor 
+     * 
+     * @param object $context if set use this context in conatiner
+     */
+    public function __construct($context=null) 
+    {
+        if (!is_object($context)) {
+            $context = $this->context;
+            $context = new $context('Container', 'Autoload'); 
+        }
+        $this->setContext(&$context);
+    }
     /**
      * Default function called to find the file of a class containing a rule
      * By default we return a file in the same directory
      * 
-     * @param string $class the name of the class we want to load
+     * @param string $ruleName the name of the rule we want to load
      * 
      * @return string a file to include
      */
-    public function getDefaultRuleFile($class)
+    public function getRuleFile($ruleName)
     {
-        $path = $this->context->about('rules path', __DIR__).DIRECTORY_SEPARATOR;
-        return $path.$class.".".$this->ruleFileExt;
+        return $this->context->proceed('include rule file', array($ruleName));
     }
     /**
-     * Default function called to convert a rule type into a class name
-     * By default we prefixes the Type with classPrefix property
+     * Call the behaviour 'get rule class' to return a rule class
      * 
-     * @param string $type the type of rule
+     * @param string $ruleName the rule name
      * 
-     * @example with default prefix and rule 'ordered' returns 'ATM_AutoloadOrdered'
      * @return string a class name
      */
-    public function getDefaultRuleClass($type)
+    public function getRuleClass($ruleName)
     {
-        return $this->rulePrefix.'_'.ucfirst($type);
+        return $this->context->proceed('get rule class', array($ruleName));
+    }
+    /**
+     * Default function called to find the file of a class containing a rule
+     * By default we return a file in the same directory
+     * 
+     * @param string $ruleName the name of the rule we want to load
+     * 
+     * @return string a file to include
+     */
+    public function getDefaultRuleFile($ruleName)
+    {
+        $default = realpath(__DIR__.'/Rule');
+        $path = $this->context->about('rules path', $default);
+        return $path.DIRECTORY_SEPARATOR.ucfirst($ruleName).".".$this->ruleFileExt;
+    }
+    /**
+     * Default function called to convert a rule name into a class name
+     * By default we prefixes the rule name with classPrefix property
+     * 
+     * @param string $ruleName the rule name
+     * 
+     * @example with default prefix and rule 'ordered' returns 'ATM_Autoload_Ordered'
+     * @return string a class name
+     */
+    public function getDefaultRuleClass($ruleName)
+    {
+        return $this->rulePrefix.ucfirst($ruleName).$this->ruleSuffix;
     }
     /**
      * Set the file extension appended to the rule class file name.
@@ -79,10 +116,10 @@ class ATM_Autoload_Container extends ATM_Autoload_Container_Abstract
         return $this;
     }
     /**
-     * Set the string prepended to rule type used to make the default class name
+     * Set the string prepended to rule name used to make the default class name
      * by default : 'ATM_Autoload'
      * 
-     * @param string $prefix a string to prepend to a rule type
+     * @param string $prefix a string to prepend to a rule name
      * 
      * @return object $this for chaining
      */
@@ -92,21 +129,58 @@ class ATM_Autoload_Container extends ATM_Autoload_Container_Abstract
         return $this;
     }
     /**
+     * Set the string prepended to rule name used to make the default class name
+     * by default : 'ATM_Autoload'
+     * 
+     * @param string $suffix a string to append to a rule name
+     * 
+     * @return object $this for chaining
+     */
+    public function setRuleClassSuffix($suffix)
+    {
+        $this->ruleSuffix = (string) $suffix;
+        return $this;
+    }
+    /**
+     * Set the context of this object
+     * 
+     * @param atmCoreContext $context a context
+     * 
+     * @return $this
+     */
+    public function setContext($context)
+    {
+        if ($context !== $this->context) {
+            $this->context =& $context;
+            $this->initBehaviours();
+        }
+        return $this;
+    }
+    /**
+     * Return the current context
+     * 
+     * @return array the current context
+     */
+    public function &context()
+    {
+        return $this->context;
+    }
+    /**
      * Set default behaviours
      *  
      * @return $this;
      */
     public function initBehaviours()
     {
-        if ($this->context->hasBehaviour('include rule file from class') == false) {
+        if ($this->context->hasBehaviour('include rule file') == false) {
             $this->context->addBehaviour(
-                'include rule file from class',
+                'include rule file',
                 array(&$this, 'getDefaultRuleFile')
             );
         }
-        if ($this->context->hasBehaviour('get rule class from type') == false) {
+        if ($this->context->hasBehaviour('get rule class') == false) {
             $this->context->addBehaviour(
-                'get rule class from type',
+                'get rule class',
                 array(&$this, 'getDefaultRuleClass')
             );
         }

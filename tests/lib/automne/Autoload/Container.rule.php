@@ -15,9 +15,10 @@ $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
 $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
 $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
-require_once $baseDir.$relDir.'RuleParams.php';
 require_once 
     $baseDir.$relDir.implode(DIRECTORY_SEPARATOR, array('Abstract', 'Rule.php'));
+require_once 
+    $baseDir.$relDir.implode(DIRECTORY_SEPARATOR, array('Rule', 'RuleParams.php'));
 /**
  * Fixture for autoload Container
  * 
@@ -35,14 +36,11 @@ class testAutoload_Container extends ATM_Autoload_Rule_Abstract
      * Initialise default parameters
      * Parameters are set in container
      * 
-     * @param object $context the context object
-     * @param array  $params  parameters of this object
-     * 
      * @return object sanitized parameters
      */
-    public static function initParams($context, $params)
+    public static function initParams()
     {
-        return new ATM_Autoload_RuleParams($context, $params);
+        return new ATM_Autoload_RuleParams();
     }
 
     /**
@@ -55,8 +53,7 @@ class testAutoload_Container extends ATM_Autoload_Rule_Abstract
     
     public function filter($entity)
     {
-        @preg_match($this->params->getFilter(), $entity, $return);
-        return $return;
+        return $entity;
     }
     /**
      * return the file name that contains the entity

@@ -17,13 +17,12 @@
  * This container load rule files, create and store rule objects 
  * then it add them to the SPL autoloader.
  * 
- * More details on what it do :
+ * More details :
  * <ul>
- * <li>resolving the name of a rule, and including the right file</li>
- * <li>construct and store the rule object, then register it on autoloader</li>
- * <li>give an acccess to rules parameters</li>
- * <li>create a context if not exists because context may influence autoload</li> 
- * <li>add context behaviours if not exists to resolve rules classes and files</li>
+ * <li>it resolves the class of a rule, and include the right file</li>
+ * <li>constructs the rule object, then register it on autoloader</li>
+ * <li>stores rules with initials parameters and class name</li>
+ * <li>provides a way to set wich rule method is called to load a class</li>
  * </ul>
  * 
  * @category Abstracts
@@ -35,67 +34,55 @@
  */
 abstract class ATM_Autoload_Container_Abstract
 {
-    protected $rules = array();
-    protected $context;
+    protected $rules          = array();
+    protected $rulesMethod    = array();
     public static $loadMethod = 'load';
     /**
-     * Constructor
-     * set context and behaviours
+     * Attach a rule object and register it to spl_autoload
      * 
-     * @param object $context the context object
-     */
-    public function __construct($context=null)
-    {
-        if (!is_object($context)) {
-            $context = $this->context;
-            $context = new $context('autoload', 'container');
-        }
-        $this->setContext(&$context);
-    }
-    /**
-     * Attach a rule object
-     * 
-     * @param object $rule   The object to add.
+     * @param object $rule   The rule object to attach.
      * @param array  $params The data to associate with the object.
      * 
      * @return object $this for chaining
      */
     public function attach($rule, $params=array())
     {
-        $paramsId = strval($params);
-        $class = get_class($rule); 
-        $this->rules[$class][$paramsId]=&$rule;
-        $autoload = array(&$this->rules[$class][$paramsId], self::$loadMethod);
-        spl_autoload_register($autoload);
+        $class    = get_class($rule);
+        $ruleId   = $this->getRuleIdFromClass($class, $params);
+        $method   = $this->getLoaderMethod($class, self::$loadMethod);
+        $this->rules[$class][$ruleId] =& $rule;
+        spl_autoload_register(array(&$this->rules[$class][$ruleId], $method));
+        $this->setLoaderMethod($class, $method);
         return $this;
     }
     /**
      * Detach a rule object
      * 
-     * @param object $rule the object to remove.
+     * @param object $rule   the object to remove.
+     * @param array  $params datas associated to the rule at creation.
      * 
      * @return object $this for chaining 
      */
-    public function detach($rule)
+    public function detach($rule, $params=array())
     {
-        $paramsId = strval($rule->getParams());
         $class    = get_class($rule);
-        return $this->unregister($class, $paramsId);
+        $ruleId   = $this->getRuleIdFromClass($rule, $params);
+        return $this->unregister($class, $ruleId);
     }
     /**
      * Unregister a rule from spl autoload and unset it from storage
      * 
-     * @param string $class    a class name
-     * @param string $paramsId a params identifiant
+     * @param string $class  a class name
+     * @param string $ruleId a params identifiant
      * 
      * @return object $this for chaining
      */
-    protected function unregister($class, $paramsId)
+    protected function unregister($class, $ruleId)
     {
-        if (isset($this->rules[$class][$paramsId])) {
-            $autoload = array($this->rules[$class][$paramsId], self::$loadMethod);
-            spl_autoload_unregister($autoload);
-            unset($this->rules[$class][$paramsId]);
+        if (isset($this->rules[$class][$ruleId])) {
+            $method = $this->getLoaderMethod($class, self::$loadMethod);
+            spl_autoload_unregister(array($this->rules[$class][$ruleId], $method));
+            unset($this->rules[$class][$ruleId]);
         }
         return $this;
     }
@@ -103,115 +90,140 @@ abstract class ATM_Autoload_Container_Abstract
      * Add a rule
      * A rule is set by :
      * <ul>
-     * <li>a type that permit to find rule class name</li>
-     * <li>parameters to contruct the rule object</li>
+     * <li>a name that permit to find rule class name</li>
+     * <li>parameters to contruct the rule object, used to find it later</li>
      * </ul>  
      * 
-     * @param string $type   the type of rule to find wich class a rule use
-     * @param array  $params parameters used to create the observer object
+     * @param string $ruleName the rule name
+     * @param array  $params   parameters used to create the observer object
      * 
      * @return object $this for chaining
      */
-    public function addRule($type, $params=array())
+    public function addRule($ruleName, $params=array())
     {
-        $class = $this->getRuleClass($type);
-        include_once $this->getRuleFile($class);
-        $rule = new $class($this->context, $params);
-        $this->attach(&$rule, $rule->getParams());
+        $class = $this->getRuleClass($ruleName);
+        include_once $this->getRuleFile($ruleName);
+        $class = new ReflectionClass($class);
+        $rule = $class->newInstanceArgs($params);
+        $this->attach(&$rule, $params);
         return $this;
     }
     /**
      * Delete a rule
-     * Find the observer attached to this and detach it, 
-     * for a given type of rule and parameters used to set it.
+     * Find the attached rule with the rule name and params used to instanciate it,
+     * then detach it and unregister it from autoload.
      * 
-     * @param string $type   the type of rule
-     * @param array  $params params used to create the corresponding rule observer
+     * @param string $ruleName the rule name
+     * @param array  $params   params used to create the rule
      * 
      * @return object $this for chaining
      */
-    public function delRule($type, $params=array())
+    public function delRule($ruleName, $params=array())
     {
-        $class = $this->getRuleClass($type);
+        $class = $this->getRuleClass($ruleName);
         if (class_exists($class)) {
-            $paramsId = strval($class::initParams($this->context, $params));
-            $this->unregister($class, $paramsId);
+            $ruleId = $this->getRuleIdFromClass($class, $params);
+            $this->unregister($class, $ruleId);
         }
         return $this;
     }
     /**
-     * return a rule object from it type and its initials parameters
+     * return a rule object from it's name and parameters used to create it
      * 
-     * @param string $type   the type of the rule
-     * @param array  $params parameters used to add the rule in the container
+     * @param string $ruleName the rule name
+     * @param array  $params   parameters used to add the rule in the container
      * 
      * @return object the rule attached to the container
      */
-    public function &getRule($type, $params=array())
+    public function &getRule($ruleName, $params=array())
     {
-        $class = $this->getRuleClass($type);
-        @include_once $this->getRuleFile($class);
-        $paramsId = strval($class::initParams($this->context, $params));
-        if (!isset($this->rules[$class][$paramsId])) {
-            $this->addRule($type, $params);
+        $class = $this->getRuleClass($ruleName);
+        include_once $this->getRuleFile($ruleName);
+        $ruleId = $this->getRuleIdFromClass($class, $params);
+        if (!isset($this->rules[$class][$ruleId])) {
+            $this->addRule($ruleName, $params);
         }
-        return $this->rules[$class][$paramsId];
+        return $this->rules[$class][$ruleId];
     }
     /**
-     * Default function called to find the file of a class containing a rule
-     * By default we return a file in the same directory
+     * return an id for params and rule class
+     * default based only on initial parameters
      * 
-     * @param string $class the name of the class we want to load
+     * @param object $ruleClass a rule class
+     * @param array  $params    parameters used to set the rule we search
+     * 
+     * @return string an identifiant
+     */
+    public function getRuleIdFromClass($ruleClass, $params=array())
+    {
+        return md5(serialize($params));
+    }
+    /**
+     * Set the method to register in autoload associated to a rule name
+     * 
+     * @param string $ruleName the rule name
+     * @param string $method   the method the autoload call to load a file
+     * 
+     * @return object $this for chaining
+     */
+    public function setRuleMethod($ruleName, $method)
+    {
+        return $this->setLoaderMethod($this->getRuleClass($ruleName), $method);
+    }
+    /**
+     * Get the method that would be called by autoload for a rule name
+     * 
+     * @param string $ruleName the rule name
+     * @param string $default  the value to return if not set
+     * 
+     * @return string the method associated to a rule or default
+     */
+    public function getRuleMethod($ruleName, $default='load')
+    {
+        return $this->getLoaderMethod($this->getRuleClass($ruleName), $default);
+    }
+    /**
+     * Set the method to register in autoload associated to a rule class
+     * 
+     * @param string $class  the class of the rule
+     * @param string $method the method the autoload call to load a file
+     * 
+     * @return object $this for chaining
+     */
+    protected function setLoaderMethod($class, $method)
+    {
+        $this->rulesMethod[$class] = $method;
+        return $this;
+    }
+    /**
+     * Get the method that would be called by autoload for a rule class
+     * 
+     * @param string $class   the class of the rule
+     * @param string $default the value to return if not set
+     * 
+     * @return string the method associated to a rule or default
+     */
+    protected function getLoaderMethod($class, $default='load')
+    {
+        if (isset($this->rulesMethod[$class])) {
+            return $this->rulesMethod[$class];
+        }
+        return $default; 
+    }
+    /**
+     * Return the file to include for a rule class
+     * 
+     * @param string $ruleName the rule name
      * 
      * @return string a file to include
      */
-    public function getRuleFile($class)
-    {
-        return $this->context
-            ->proceed('include rule file from class', array($class));
-    }
+    abstract public function getRuleFile($ruleName);
     /**
-     * Call the behaviour 'get rule class from type' to return a rule class
+     * Return a rule class from a rule name
      * 
-     * @param string $type the type of rule
+     * @param string $ruleName the rule name
      * 
      * @return string a class name
      */
-    public function getRuleClass($type)
-    {
-        return $this->context
-            ->proceed('get rule class from type', array($type));
-    }
-    /**
-     * Set the context of this object
-     * 
-     * @param atmCoreContext $context a context
-     * 
-     * @return $this
-     */
-    public function setContext($context)
-    {
-        $this->context =& $context;
-        $this->initBehaviours();
-        return $this;
-    }
-    /**
-     * Return the current context
-     * 
-     * @return array the current context
-     */
-    public function &context()
-    {
-        return $this->context;
-    }
-    /**
-     * Initialize default behaviours of this object
-     * 
-     * @return $this
-     */
-    public function initBehaviours()
-    {
-        // implement in child
-        return $this;
-    } 
+    abstract public function getRuleClass($ruleName);
 }

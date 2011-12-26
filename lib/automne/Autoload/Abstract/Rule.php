@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Abstracts
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_Rule_Abstract.php
@@ -14,7 +14,7 @@
 
 
 /**
- * Rule class with cache
+ * Rule class 
  * helps to include files required by entities: (abstract) classes, interfaces...
  * They are set by a container which register their method 'load' in autoloader.
  * A rule can :
@@ -24,24 +24,12 @@
  * - finally include the needed file. 
  * Optionnaly it can return the type of an entity : library, view, stage... 
  * The autoload process start by asking if the entity is known, 
- * then where the entity file resides and then includes the file. 
- * A rule depends on parameters and context.
- * This rule has 3 parameters :
- * <ul>
- * <li>base directory : a root path from where the search is done</li>
- * <li>filter : a string that help to retrieve informations from the entity name</li>
- * <li>default type : the default generic type of entities, 
- * if it can't be resolved by the whoIs method.
- * </li>
- * </ul>
- * As paths and managed entities can depend of a context, 
- * this rule caches filtered entities names and paths with the container context.
- * There is 2 caches managed by parameters object.
+ * then where the entity file resides and finally includes the file.
  * 
  * Override methods filter, initParams, whereIs and WhoIs to set a rule.
  * 
  * @category Abstracts
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_Rule_Abstract
@@ -49,31 +37,17 @@
  */
 abstract class ATM_Autoload_Rule_Abstract
 {
-    const USE_CACHE = true;
-    protected $context;
     protected $params;
     
     /**
      * Constructor
      * 
-     * @param object       $context a context
-     * @param array|object $params  parameters as array or ATM_Autoload_RuleParams
      */
-    public function __construct($context, $params)
+    public function __construct()
     {
-        $this->context =& $context;
-        $this->params  = $this->initParams(&$this->context, $params);
+        $args = func_get_args();
+        $this->params = call_user_func_array(array($this, 'initParams'), $args);
     }
-    /**
-     * Initialise default parameters
-     * Parameters are set in container
-     * 
-     * @param object $context the context object
-     * @param array  $params  parameters of this object
-     * 
-     * @return object sanitized parameters
-     */
-    abstract public static function initParams($context, $params);
     /**
      * Returns parameters of this object
      * 
@@ -92,54 +66,6 @@ abstract class ATM_Autoload_Rule_Abstract
     {
         $args = func_get_args();
         return implode(DIRECTORY_SEPARATOR, $args);
-    }
-    /**
-     * Test whether this object can load the right file from cache
-     * 
-     * @param string $entity the entity name
-     * 
-     * @return bool whether this object know the entity
-     */
-    public function cacheKnow($entity)
-    {
-        if ($this->params->getCache($entity)!==false) {
-            return true;
-        }
-        $filterCache = $this->params->getFilterCache($entity, false);
-        if ($filterCache !== false) {
-            return $filterCache !== array();
-        } else {
-            return $this->cacheFilter($entity) !== array();
-        }
-    }
-    /**
-     * filter an entity name and put it to cache
-     * 
-     * @param string $entity the entity name
-     * 
-     * @return array the result of filter
-     */
-    public function cacheFilter($entity)
-    {
-        $result = $this->filter($entity);
-        $this->params->setFilterCache($entity, $result);
-        return $result;
-    }
-    /**
-     * Get the path from cache or create and cache it if not in cache
-     *  
-     * @param string $entity a entity name
-     * 
-     * @return string the file name where to load the entity or false if not found 
-     */
-    public function cacheWhereIs($entity)
-    {
-        $where = $this->params->getCache($entity);
-        if ($where === false) {
-            $where = $this->whereIs($entity);
-            $this->params->setCache($entity, $where);
-        }
-        return $where;
     }
     /**
      * Test whether this object can load the right file 
@@ -186,10 +112,7 @@ abstract class ATM_Autoload_Rule_Abstract
      */
     public function load($entity) 
     {
-        if (self::USE_CACHE && $this->cacheKnow($entity)) {
-            $where = $this->cacheWhereIs($entity);
-            return (bool) @include_once $where;
-        } elseif ($this->know($entity)) {
+        if ($this->know($entity)) {
             $where = $this->whereIs($entity);
             return (bool) @include_once $where;
         }

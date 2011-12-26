@@ -11,11 +11,7 @@
  * @link     ATM_Autoload_Container.php
  *
  */
-$dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
-$relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
-$baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
-require_once $baseDir.$relDir.'Container.php';
 
 /**
  * Test class for ATM_Autoload_Container.
@@ -42,6 +38,10 @@ class ATM_Autoload_ContainerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
+        $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
+        $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
+        include_once $baseDir.$relDir.'Container.php';
         $this->object = new ATM_Autoload_Container();
     }
 
@@ -54,10 +54,10 @@ class ATM_Autoload_ContainerTest extends PHPUnit_Framework_TestCase
     public function setBehavioursToContextIfNotSet()
     {
         $this->assertTrue(
-            $this->object->context()->hasBehaviour('get rule class from type')
+            $this->object->context()->hasBehaviour('get rule class')
         );
         $this->assertTrue(
-            $this->object->context()->hasBehaviour('include rule file from class')
+            $this->object->context()->hasBehaviour('include rule file')
         );
     }
     /**
@@ -92,16 +92,16 @@ class ATM_Autoload_ContainerTest extends PHPUnit_Framework_TestCase
     public function loadARuleAddItToSPLAutoloadAndRemoveIt()
     {
         $this->object->context()->describe('rules path', __DIR__);
-        $this->object->setRuleClassPrefix('testAutoload');
-        $this->assertFalse(class_exists('testAutoloadContainerRule'));
-        $this->object->addRule('containerRule');
-        $rule   = $this->object->getRule('containerRule');
+        $this->object->setRuleClassPrefix('testAutoload_');
+        $this->assertFalse(class_exists('testAutoload_Container_Rule'));
+        $this->object->addRule('container');
+        $rule   = $this->object->getRule('container');
         $expect = array($rule, 'load');
         $rule->getParams()->setDefaultType('defaultType');//
-        $this->assertTrue(class_exists('testAutoload_ContainerRule'));
+        $this->assertTrue(class_exists('testAutoload_Container_Rule'));
         $this->assertTrue(in_array($expect, spl_autoload_functions()));
         // unload
-        $this->object->delRule('containerRule');
+        $this->object->delRule('container');
         $this->assertFalse(in_array($expect, spl_autoload_functions()));
         
     }
@@ -116,14 +116,16 @@ class ATM_Autoload_ContainerTest extends PHPUnit_Framework_TestCase
     {
         // set some options
         $this->object->context()->describe('rules path', __DIR__);
-        $this->object->setRuleClassPrefix('testAutoload');
-        $this->object->setRuleFileExtension('.php');
+        $this->object->setRuleClassPrefix('testAutoload_');
+        $this->object->setRuleClassSuffix('');
+        $this->object->setRuleFileExtension('.rule.php');
         // test if options correctly sets
-        $this->assertAttributeEquals('testAutoload', 'rulePrefix', $this->object);
-        $object= $this->object->context()->getBehaviour('get rule class from type');
-        $this->assertAttributeEquals('testAutoload', 'rulePrefix', $object[0]);
-        $this->assertAttributeEquals('php', 'ruleFileExt', $this->object);
-        $this->assertAttributeEquals('php', 'ruleFileExt', $object[0]);
+        $this->assertAttributeEquals('testAutoload_', 'rulePrefix', $this->object);
+        $this->assertAttributeEquals('', 'ruleSuffix', $this->object);
+        $object= $this->object->context()->getBehaviour('get rule class');
+        $this->assertAttributeEquals('testAutoload_', 'rulePrefix', $object[0]);
+        $this->assertAttributeEquals('rule.php', 'ruleFileExt', $this->object);
+        $this->assertAttributeEquals('rule.php', 'ruleFileExt', $object[0]);
         $type = $this->object->getDefaultRuleClass('Container');
         $this->assertEquals('testAutoload_Container', $type);
         // load

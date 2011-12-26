@@ -1,6 +1,6 @@
 <?php
 /**
- * File ATM_Autoload_StartWithTest.php
+ * File ATM_Autoload_StartWith_RuleTest.php
  *
  * PHP version 5.2
  *
@@ -8,35 +8,28 @@
  * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     ATM_Autoload_StartWithTest.php
+ * @link     ATM_Autoload_StartWith_RuleTest.php
  *
  */
-$dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
-$relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
-$baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
-require_once $baseDir.$relDir.'StartWith.rule.php';
-require_once 
-    $baseDir.$relDir.implode(DIRECTORY_SEPARATOR, array('..', 'Context', 'Context.php'));
+
 
 /**
- * Test class for ATM_Autoload_StartWith.
+ * Test class for ATM_Autoload_StartWith_Rule.
  * 
  * @category AutomneTests
  * @package  Tests/Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     ATM_Autoload_StartWithTest
+ * @link     ATM_Autoload_StartWith_RuleTest
  *
  */
 
-class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
+class ATM_Autoload_StartWith_RuleTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var ATM_Autoload_StartWith
+     * @var ATM_Autoload_StartWith_Rule
      */
     protected $object;
-    protected $context;
-    protected $params=array(__DIR__,'test', 'lib');
     protected $baseDir;
     protected $libDir;
 
@@ -46,12 +39,14 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      * @return null
      */
     protected function setUp()
-    {
-        global $baseDir, $relDir;
+    {    
+        $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
+        $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
+        $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
+        include_once $baseDir.$relDir.'StartWith.php';
         $this->baseDir = $baseDir.'lib'.DIRECTORY_SEPARATOR.'automne';
         $this->libDir  = $baseDir.$relDir;
-        $this->context = new ATM_Context('startWith', 'test');
-        $this->object  = new ATM_Autoload_StartWith($this->context, $this->params);
+        $this->object  = new ATM_Autoload_StartWith_Rule(__DIR__, 'test', 'lib');
     }
 
 
@@ -65,7 +60,7 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             $this->object->getParams(),
-            ATM_Autoload_StartWith::initParams($this->context, $this->params)
+            ATM_Autoload_StartWith_Rule::initParams(__DIR__, 'test', 'lib')
         );
     }
 
@@ -77,9 +72,9 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      */
     public function whenParamsAreInitialisedIfNullValuesAreGivenRuleSetsDefaults()
     {
-        $params = ATM_Autoload_StartWith::initParams($this->context, array());
-        $this->assertEquals('atm', $params->getFilter());
-        $this->assertNotEquals('atm', $this->object->getParams()->getFilter());
+        $params = ATM_Autoload_StartWith_Rule::initParams();
+        $this->assertEquals('ATM', $params->getFilter());
+        $this->assertNotEquals('ATM', $this->object->getParams()->getFilter());
         $this->assertEquals('lib', $params->getDefaultType());
         $this->assertEquals($this->baseDir, $params->getBaseDir());
         return $params;
@@ -94,9 +89,9 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      * @depends whenParamsAreInitialisedIfNullValuesAreGivenRuleSetsDefaults
      * @return null 
      */
-    public function defaultBaseDirIsTheParentOfRuleDirectory($params)
+    public function defaultBaseDirIsTheParentOfParentRuleDirectory($params)
     {
-        $pOfpDir = implode(DIRECTORY_SEPARATOR, array($this->libDir, '..'));
+        $pOfpDir = implode(DIRECTORY_SEPARATOR, array($this->libDir, '..', '..'));
         $this->assertEquals(realpath($pOfpDir), $params->getBaseDir());
     }
 
@@ -109,7 +104,7 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
     public function filterClassesThatStartWithParamsFilter()
     {
         $start       = $this->object->getParams()->getFilter();
-        $mustBeFound = $start.'Class';
+        $mustBeFound = $start.'_Class';
         $this->assertTrue($this->object->filter($mustBeFound)!=array());
         $mustNotFound= $start;
         $this->assertTrue($this->object->filter($mustNotFound)==array());
@@ -124,7 +119,7 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      */
     public function knowClassesThatStartWithParamsFilter()
     {
-        $mustBeFound = 'testPackageStartWithType';
+        $mustBeFound = 'test_Package_StartWith_Type';
         $this->assertTrue($this->object->cacheKnow($mustBeFound));
         $this->assertTrue($this->object->cacheKnow($mustBeFound));
         $this->assertTrue($this->object->cacheKnow($mustBeFound));
@@ -141,52 +136,53 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      */
     public function returnNamePackageAndWhoisForKnownClassesWithOneWord()
     {
-        $entity = $this->object->getParams()->getFilter().'Name';
+        $entity = $this->object->getParams()->getFilter().'_Name';
         $this->object->cacheKnow($entity);
         $this->assertEquals('Name', $this->object->getName($entity));
-        $this->assertEquals('name', $this->object->getPackage($entity));
-        $this->assertEquals('lib', $this->object->whois($entity));
+        $this->assertEquals('Name', $this->object->getPackage($entity));
+        $this->assertEquals('lib', $this->object->getType($entity));
+        $this->assertEquals('', $this->object->whois($entity));
     }
     /**
-     * return name package and whois with one word
+     * return name package and whois with two words
      * 
      * @test
      * @return null
      */
     public function returnNamePackageAndWhoisForKnownClassesWithTwoWords()
     {
-        $entity = $this->object->getParams()->getFilter().'PackageName';
+        $entity = $this->object->getParams()->getFilter().'_Package_Name';
         $this->object->cacheKnow($entity);
         $this->assertEquals('Name', $this->object->getName($entity));
-        $this->assertEquals('package', $this->object->getPackage($entity));
-        $this->assertEquals('lib', $this->object->whois($entity));
-        $entity = $this->object->getParams()->getFilter().'NameType';
+        $this->assertEquals('Package', $this->object->getPackage($entity));
+        $this->assertEquals('lib', $this->object->getType($entity));
+        $entity = $this->object->getParams()->getFilter().'_Name_Type';
         $this->object->cacheKnow($entity);
         $this->assertEquals('Name', $this->object->getName($entity));
-        $this->assertEquals('name', $this->object->getPackage($entity));
-        $this->assertEquals('types', $this->object->whois($entity));
+        $this->assertEquals('Name', $this->object->getPackage($entity));
+        $this->assertEquals('Type', $this->object->whois($entity));
     }
     /**
-     * return name package and whois with one word
+     * return name package and whois with three words
      * 
      * @test
      * @return null
      */
     public function returnNamePackageAndWhoisForKnownClassesWithThreeWords()
     {
-        $entity = $this->object->getParams()->getFilter().'PackageNameType';
+        $entity = $this->object->getParams()->getFilter().'_Package_Name_Type';
         $this->object->cacheKnow($entity);
         $this->assertEquals('Name', $this->object->getName($entity));
-        $this->assertEquals('package', $this->object->getPackage($entity));
-        $this->assertEquals('types', $this->object->whois($entity));
-        $entity = $this->object->getParams()->getFilter().'PackageCompoundName';
+        $this->assertEquals('Package', $this->object->getPackage($entity));
+        $this->assertEquals('Type', $this->object->whois($entity));
+        $entity = $this->object->getParams()->getFilter().'_Package_CompoundName';
         $this->object->cacheKnow($entity);
         $this->assertEquals('CompoundName', $this->object->getName($entity));
-        $this->assertEquals('package', $this->object->getPackage($entity));
-        $this->assertEquals('lib', $this->object->whois($entity));
+        $this->assertEquals('Package', $this->object->getPackage($entity));
+        $this->assertEquals('lib', $this->object->getType($entity));
     }
     /**
-     * return name package and whois with one word
+     * return name package and whois with more than three words
      * 
      * @test
      * @return null
@@ -194,13 +190,31 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
     public function returnNamePackageAndWhoisForKnownClassesWithMoreThanThreeWords()
     {
         $entity = $this->object->getParams()
-            ->getFilter().'PackageMultiCompoundNameType';
+            ->getFilter().'_Package_MultiCompoundName_Type';
         $this->object->cacheKnow($entity);
         $this->assertEquals('MultiCompoundName', $this->object->getName($entity));
-        $this->assertEquals('package', $this->object->getPackage($entity));
-        $this->assertEquals('types', $this->object->whois($entity));
+        $this->assertEquals('Package', $this->object->getPackage($entity));
+        $this->assertEquals('Type', $this->object->whois($entity));
     }
 
+    /**
+     * can clear cache 
+     * 
+     * @test
+     * @return null
+     */
+    public function canClearCache()
+    {
+        $entity = 'undefinedClass';
+        $file=$this->object->implodePath(__DIR__, 'Type', 'undefined.php');
+        $this->object->setCache($entity, $file);
+        $this->assertTrue($this->object->cacheKnow($entity));
+        $this->assertFalse($this->object->know($entity));
+        $this->object->clearCache();
+        $this->assertFalse($this->object->cacheKnow($entity));
+        $this->object->load($entity);
+        $this->assertFalse(class_exists($entity));
+    }
 
     /**
      * load a file from path cache
@@ -211,8 +225,8 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
     public function loadAFileFromPathCache()
     {
         $entity = 'undefinedClass';
-        $file=implode(DIRECTORY_SEPARATOR, array(__DIR__, 'types','undefined.php'));
-        $this->object->getParams()->setCache($entity, $file);
+        $file=$this->object->implodePath(__DIR__, 'Type', 'undefined.php');
+        $this->object->setCache($entity, $file);
         $this->assertTrue($this->object->cacheKnow($entity));
         $this->assertFalse($this->object->know($entity));
         $this->object->load($entity);
@@ -226,7 +240,7 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      */
     public function loadAFileFromKnowCache()
     {
-        $entity = 'testPackageStartWithType';
+        $entity = 'test_Package_StartWith_Type';
         $this->assertTrue($this->object->cacheKnow($entity));
         $this->assertFalse(class_exists($entity));
         $this->object->load($entity);
@@ -241,12 +255,12 @@ class ATM_Autoload_StartWithTest extends PHPUnit_Framework_TestCase
      */
     public function loadAFileNotInCache()
     {
-        $entity = 'testPackageStartWith';
+        $entity = 'test_Package_StartWith';
         $this->assertFalse(
-            $this->object->getParams()->getFilterCache($entity, false)
+            $this->object->getFilterCache($entity, false)
         );
         $this->assertFalse(
-            $this->object->getParams()->getCache($entity, false)
+            $this->object->getCache($entity, false)
         );
         $this->assertFalse(class_exists($entity));
         $this->object->load($entity);
