@@ -112,17 +112,6 @@ class ATM_Config_SectionTest extends PHPUnit_Framework_TestCase
         $this->assertContains('Section', get_class($this->object['name'][0]));
     }
     /**
-     * when setting an ArrayObject value become a section
-     * 
-     * @test
-     * @return null
-     */
-    public function whenSettingArrayObjectValueBecomeASection()
-    {
-        $this->object['name'] = new ArrayObject(array());
-        $this->assertContains('Section', get_class($this->object['name'][0]));
-    }
-    /**
      * when setting a Config Object value become a section
      * 
      * @test
@@ -166,6 +155,79 @@ class ATM_Config_SectionTest extends PHPUnit_Framework_TestCase
             $this->assertEquals($expect[$position], $value->getContent());
         }
         $this->assertEquals(4, $position);
+    }
+    /**
+     * can add and get directives
+     * 
+     * @return @test
+     */
+    public function canAddAndGetDirectives()
+    {
+        $this->object->addComment('value 0');
+        $this->object->addDirective('name', 'value0');
+        $this->object->addComment('value 1');
+        $this->object->addDirective('name', 'value1');
+        $content = $this->object->getDirective('name')->getContent();
+        $this->assertEquals('value0', $content);
+        $content = $this->object->getDirective('name', 1)->getContent();
+        $this->assertEquals('value1', $content);
+        $content = $this->object->getDirectives('name');
+        $this->assertEquals('value0', $content[0]->getContent());
+        $this->assertEquals('value1', $content[1]->getContent());
+        try {
+            $content = $this->object->getDirective('name', 2)->getContent();
+        } catch (InvalidArgumentException $e) {
+            $this->assertContains('2', $e->getMessage());
+        }
+        $this->assertTrue(isset($e));
+    }
+    /**
+     * can add and get Sections
+     * 
+     * @return @test
+     */
+    public function canAddAndGetSections()
+    {
+        $this->object->addComment('value 0');
+        $this->object->addDirective('name', 'value0');
+        $this->object->addSection('name', array('name'=>'value0'));
+        $this->object->addComment('value 1');
+        $this->object->addSection('name', array('name'=>'value1'));
+        $content = $this->object->getSection('name')->getDirective('name');
+        $this->assertEquals('value0', $content->getContent());
+        $content = $this->object->getSection('name', 1)->getDirective('name');
+        $this->assertEquals('value1', $content->getContent());
+        $content = $this->object->getSections('name')->getDirectives('name');
+        $this->assertEquals('value0', $content[0]->getContent());
+        $this->assertEquals('value1', $content[1]->getContent());
+        try {
+            $content = $this->object->getSection('name', 2);
+        } catch (InvalidArgumentException $e) {
+            $this->assertContains('2', $e->getMessage());
+        }
+        $this->assertTrue(isset($e));
+    }
+    /**
+     * can add and get Comments
+     * 
+     * @return @test
+     */
+    public function canAddAndGetComments()
+    {
+        $this->object->addComment('value 0');
+        $this->object->addDirective('name', 'value0');
+        $this->object->addComment('value 1');
+        $this->object->addDirective('name', 'value1');
+        $content = $this->object->getCommentAt(0)->getLine(0);
+        $this->assertEquals('value 0', $content);
+        $content = $this->object->getCommentAt(1)->getLine(0);
+        $this->assertEquals('value 1', $content);
+        try {
+            $content = $this->object->getCommentAt(5);
+        } catch (InvalidArgumentException $e) {
+            $this->assertContains('5', $e->getMessage());
+        }
+        $this->assertTrue(isset($e));
     }
 }
 ?>

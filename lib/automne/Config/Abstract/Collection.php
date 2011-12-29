@@ -133,10 +133,14 @@ abstract class ATM_Config_Collection_Abstract
      * @param integer $offset the index of an object
      * 
      * @see ArrayAccess::offsetGet()
+     * @throws InvalidArgumentException
      * @return object of type self::$objectsType 
      */
     public function offsetGet($offset)
     {
+        if (!isset($this->content[$offset])) {
+            throw new InvalidArgumentException("Undefined offset at $offset");
+        }
         return $this->content[$offset];
     }
     /**
@@ -155,7 +159,7 @@ abstract class ATM_Config_Collection_Abstract
     public function offsetSet($offset, $value)
     {
         if ($this->allowed($value) == false) {
-            $msg=sprintf($this->InvArgMsg, static::$objectsType, get_class($value));
+            $msg=sprintf($this->InvArgMsg, static::$objectsType, gettype($value));
             throw new InvalidArgumentException($msg);
         }
         $this->walkOn('properties', 'setProperty', array($offset, &$value));
@@ -220,6 +224,20 @@ abstract class ATM_Config_Collection_Abstract
         $this->offsetSet($offset, &$value);
         $this->objIds[$offset]=$objectId;
         $this->notify('appendWithId', &$value, $objectId);
+        return $this;
+    }
+    /**
+     * Merge this collection with the one in given argument the bind it
+     *  
+     * @param ATM_Config_Collection_Abstract $collection the collection to merge
+     * 
+     * @return object this for chaining
+     */
+    public function merge(ATM_Config_Collection_Abstract $collection)
+    {
+        foreach ($this->properties as $property) {
+            $this->$property = array_merge($this->$property, $collection->$property);
+        }
         return $this;
     }
 }

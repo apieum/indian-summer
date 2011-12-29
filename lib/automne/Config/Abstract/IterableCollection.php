@@ -26,10 +26,27 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'Collection.php';
  */
 abstract class ATM_Config_IterableCollection_Abstract 
     extends ATM_Config_Collection_Abstract
-    implements Iterator, Countable
+    implements Iterator, Countable, SeekableIterator
 {
     protected $itSubject  = 'content';
     protected $currentKey = 0;
+    /**
+     * return the value of current iterator subject at offset $position 
+     * 
+     * @param integer $position the position to search
+     * 
+     * @throws OutOfBoundsException if the position not exists
+     * @return mixed value of subject at position
+     */
+    public function seek($position)
+    {
+        $subject = $this->itSubject;
+        if (!isset($this->{$subject}[$position])) {
+            throw new OutOfBoundsException("Undefined offset at position $position");
+        }
+        $this->currentKey = $position;
+        return $this->{$subject}[$position];
+    }
     /**
      * Set the property on wich iterate
      * 
