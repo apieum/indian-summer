@@ -8,9 +8,10 @@
  * @package  Config
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     ATM_Confing_Comment.php
+ * @link     ATM_Config_Comment.php
  *
  */
+require_once implode(DIRECTORY_SEPARATOR, array(__DIR__,'Abstract','Config.php'));
  /**
  * A config multiline comment
  * This helps to manage multiline comments.
@@ -29,12 +30,12 @@
  * @package  Config
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     ATM_Confing_Comment
+ * @link     ATM_Config_Comment
  *
  */
-class ATM_Confing_Comment
+class ATM_Config_Comment extends ATM_Config_Abstract
 {
-    protected $lines       = array();
+    protected $content     = array();
     protected $startOfLine = '';
     protected $endOfLine   = '(\n|\r|\r\n)';
     /**
@@ -44,7 +45,23 @@ class ATM_Confing_Comment
      */
     public function __construct($comment)
     {
-        $this->lines = $this->splitLines($comment);
+        $this->setContent($comment);
+    }
+    /**
+     * return an array of given argument 
+     * 
+     * @param mixed &$content lines of this comment
+     * 
+     * @return null
+     */
+    protected function &validateContent(&$content) 
+    {
+        if (is_string($content)) {
+            $content = $this->splitLines($content);
+        } else {
+            $content = (array) $content;
+        }
+        return $content;
     }
     /**
      * Split a string in array of line delimited by $startOfLine and $endOfLine 
@@ -110,10 +127,10 @@ class ATM_Confing_Comment
      */
     public function fillTo($max, $value='')
     {
-        $num_lines = count($this->lines);
+        $num_lines = count($this->content);
         if ($max > $num_lines) {
             $new_lines = array_fill(0, $max - $num_lines, $value);
-            $this->lines = array_merge($this->lines, $new_lines);
+            $this->content = array_merge($this->content, $new_lines);
         }
         return $this;
     }
@@ -127,8 +144,8 @@ class ATM_Confing_Comment
      */
     public function &getLine($line_pos, $default='')
     {
-        if (isset($this->lines[$line_pos])) {
-            return $this->lines[$line_pos];
+        if (isset($this->content[$line_pos])) {
+            return $this->content[$line_pos];
         }
         return $default;
     }
@@ -139,7 +156,7 @@ class ATM_Confing_Comment
      */
     public function &getLines()
     {
-        return $this->lines;
+        return $this->content;
     }
     /**
      * append a new line at the end of this comment.
@@ -151,7 +168,7 @@ class ATM_Confing_Comment
      */
     public function newLine($line)
     {
-        $this->lines = array_merge($this->lines, $this->splitLines($line));
+        $this->content = array_merge($this->content, $this->splitLines($line));
         return $this;
     }
     /**
@@ -183,9 +200,9 @@ class ATM_Confing_Comment
     {
         $this->fillTo($from);
         if (is_null($num_lines)) {
-            $num_lines = count($this->lines) - $from;
+            $num_lines = count($this->content) - $from;
         }
-        array_splice($this->lines, $from, $num_lines, $lines);
+        array_splice($this->content, $from, $num_lines, $lines);
         return $this;
     }
     /**
@@ -205,49 +222,31 @@ class ATM_Confing_Comment
     /**
      * replaces lines by the given one from position $from
      * 
-     * @param array $lines lines that will replace existing ones
-     * @param int   $from  the position of the first line to replace
+     * @param array|string $lines lines that will replace existing ones
+     * @param integer      $from  the position of the first line to replace
      * 
      * @return object $this for chaining
      */
-    public function replaceLines(array $lines, $from=0) 
+    public function replaceLines($lines, $from=0) 
     {
+        if (is_string($lines)) {
+            $lines = $this->splitLines($lines);
+        }
         return $this->spliceLines($lines, $from, count($lines));
-    }
-    /**
-     * replaces lines by the splited given one from position $from
-     * 
-     * @param string $line a comment line to split in replacement of existing ones
-     * @param int    $from the position of the first line to replace
-     * 
-     * @return object $this for chaining
-     */
-    public function replaceLine($line, $from=0) 
-    {
-        return $this->replaceLines($this->splitLines($line), $from);
     }
     /**
      * insert lines at position $from 
      * 
-     * @param array $lines the lines to insert
-     * @param int   $from  the position where to insert lines
+     * @param array|string $lines the lines to insert
+     * @param integer      $from  the position where to insert lines
      * 
      * @return object $this for chaining
      */
-    public function insertLines(array $lines, $from=0)
+    public function insertLines($lines, $from=0)
     {
+        if (is_string($lines)) {
+            $lines = $this->splitLines($lines);
+        }
         return $this->spliceLines($lines, $from, 0);
-    }
-    /**
-     * insert splited lines at position $from 
-     * 
-     * @param string $line the line to split and insert
-     * @param int    $from the position where to insert lines
-     * 
-     * @return object $this for chaining
-     */
-    public function insertLine($line, $from=0)
-    {
-        return $this->insertLines($this->splitLines($line), $from);
     }
 }

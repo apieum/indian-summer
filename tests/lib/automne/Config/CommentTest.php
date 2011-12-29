@@ -1,5 +1,4 @@
 <?php
-
 /**
  * File CommentTest.php
  *
@@ -9,29 +8,25 @@
  * @package  Tests/Config
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     ATM_Confing_Comment.php
+ * @link     ATM_Config_Comment.php
  *
  */
-$dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
-$relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
-$baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
 
-require_once $baseDir.$relDir.'Comment.php';
 
 /**
- * Test class for ATM_Confing_Comment.
+ * Test class for ATM_Config_Comment.
  * 
  * @category AutomneTests
  * @package  Tests/Config
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     ATM_Confing_Comment
+ * @link     ATM_Config_Comment
  *
  */
-class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
+class ATM_Config_CommentTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var ATM_Confing_Comment
+     * @var ATM_Config_Comment
      */
     protected $object;
 
@@ -42,7 +37,11 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new ATM_Confing_Comment('');
+        $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
+        $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
+        $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
+        include_once $baseDir.$relDir.'Comment.php';
+        $this->object = new ATM_Config_Comment('');
     }
 
     /**
@@ -79,10 +78,10 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     {
         $expect = array('', 'line 1 ');
         $this->object->newLine('line 1 ');
-        $this->assertAttributeEquals($expect, 'lines', $this->object);
+        $this->assertAttributeEquals($expect, 'content', $this->object);
         $expect = array('', 'line 1 ',' line 2 ', '', ' line 4');
         $this->object->newLine(" line 2 \n\n line 4");
-        $this->assertAttributeEquals($expect, 'lines', $this->object);
+        $this->assertAttributeEquals($expect, 'content', $this->object);
     }
     /**
      * can edit an existing line
@@ -93,10 +92,10 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     public function canEditAnExistingLine()
     {
         $this->object->editLine(0, "line 1 ");
-        $this->assertAttributeEquals(array("line 1 "), 'lines', $this->object);
+        $this->assertAttributeEquals(array("line 1 "), 'content', $this->object);
         $expect = array('line 1 ',' line 2 ', '', ' line 4');
         $this->object->editLine(0, "line 1 \n line 2 \n\n line 4");
-        $this->assertAttributeEquals($expect, 'lines', $this->object);
+        $this->assertAttributeEquals($expect, 'content', $this->object);
         
     }
     /**
@@ -108,10 +107,11 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     public function canEditALineThatNotExists()
     {
         $this->object->editLine(2, "line 1 ");
-        $this->assertAttributeEquals(array('','',"line 1 "), 'lines', $this->object);
+        $expect = array('','',"line 1 ");
+        $this->assertAttributeEquals($expect, 'content', $this->object);
         $expect = array('line 1 ',' line 2 ', '', ' line 4', '', 'line 1 ');
         $this->object->editLine(0, "line 1 \n line 2 \n\n line 4");
-        $this->assertAttributeEquals($expect, 'lines', $this->object);
+        $this->assertAttributeEquals($expect, 'content', $this->object);
         
     }
     /**
@@ -124,7 +124,7 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     {
         $line =& $this->object->getLine(0);
         $line = 'line 1 ';
-        $this->assertAttributeEquals(array("line 1 "), 'lines', $this->object);
+        $this->assertAttributeEquals(array("line 1 "), 'content', $this->object);
         
     }
     /**
@@ -137,11 +137,11 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     {
         $line =& $this->object->getLine(0, 'line 1 ');
         $line = $line;
-        $this->assertAttributeEquals(array(""), 'lines', $this->object);
+        $this->assertAttributeEquals(array(""), 'content', $this->object);
         $this->object->editLine(0, $this->object->getLine(0, 'line 1 '));
-        $this->assertAttributeEquals(array(""), 'lines', $this->object);
+        $this->assertAttributeEquals(array(""), 'content', $this->object);
         $this->object->editLine(1, $this->object->getLine(1, 'line 1 '));
-        $this->assertAttributeEquals(array("", 'line 1 '), 'lines', $this->object);
+        $this->assertAttributeEquals(array("", 'line 1 '), 'content', $this->object);
         
     }
     /**
@@ -155,7 +155,7 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
         $this->assertSame(array(""), $this->object->getLines());
         $lines =& $this->object->getLines();
         $lines = array('line 1 ', ' line 2 ');
-        $this->assertAttributeEquals($lines, 'lines', $this->object);
+        $this->assertAttributeEquals($lines, 'content', $this->object);
     }
     
     /**
@@ -167,17 +167,17 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     public function canReplaceALine()
     {
         $this->assertSame(array(""), $this->object->getLines());
-        $this->object->replaceLine('line 1 ');
+        $this->object->replaceLines('line 1 ');
         $lines =& $this->object->getLines();
         $this->assertEquals(array('line 1 '), $lines);
         $lines = array('line 1 ',' line 2 ', '', ' line 4');
-        $this->object->replaceLine('line 3', 3);
+        $this->object->replaceLines('line 3', 3);
         $this->assertSame('line 3', $this->object->getLine(3));
         $this->assertNotSame('line 4', $this->object->getLine(4));
-        $this->object->replaceLine('line 4', 4);
+        $this->object->replaceLines('line 4', 4);
         $this->assertSame('line 4', $this->object->getLine(4));
-        $this->object->replaceLine("\n line 4", 3);
-        $this->assertAttributeEquals($lines, 'lines', $this->object);
+        $this->object->replaceLines("\n line 4", 3);
+        $this->assertAttributeEquals($lines, 'content', $this->object);
     }
     /**
      * can replace lines
@@ -205,14 +205,14 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
     public function canInsertALine()
     {
         $this->assertSame(array(""), $this->object->getLines());
-        $this->object->insertLine('line 1 ', 0);
+        $this->object->insertLines('line 1 ', 0);
         $this->assertEquals(array('line 1 ', ''), $this->object->getLines());
         $lines = array('line 1 ',' line 2 ', '', ' line 4');
-        $this->object->insertLine(' line 2 ', 1);
+        $this->object->insertLines(' line 2 ', 1);
         $this->assertSame(' line 2 ', $this->object->getLine(1));
-        $this->object->insertLine(' line 4', 3);
+        $this->object->insertLines(' line 4', 3);
         $this->assertSame(' line 4', $this->object->getLine(3));
-        $this->assertAttributeEquals($lines, 'lines', $this->object);
+        $this->assertAttributeEquals($lines, 'content', $this->object);
     }
     /**
      * can replace lines
@@ -229,8 +229,8 @@ class ATM_Confing_CommentTest extends PHPUnit_Framework_TestCase
         $this->assertSame($lines, $this->object->getLines());
         $this->object->spliceLines(array(''));
         $this->assertSame(array(""), $this->object->getLines());
-        $this->object->insertLine("line 1 \n line 2 ");
-        $this->object->insertLine(" line 4", 3);
+        $this->object->insertLines("line 1 \n line 2 ");
+        $this->object->insertLines(" line 4", 3);
         $this->assertSame($lines, $this->object->getLines());
     }
 }
