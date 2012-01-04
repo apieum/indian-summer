@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_RuleParams.php
@@ -20,7 +20,7 @@
  * - default type : value returned when whois method can't resolve an entity type
  *  
  * @category Automne
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_RuleParams

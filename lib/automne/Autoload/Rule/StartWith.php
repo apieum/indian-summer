@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_StartWith.php
@@ -25,7 +25,7 @@ require_once
  * - optionaly a type (otherwise use default) : ex. abstracts, interfaces...  
  * 
  * @category Automne
- * @package  Autoload/Rules
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_StartWith

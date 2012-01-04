@@ -48,8 +48,7 @@ class ATM_Context_TemplateTest extends PHPUnit_Framework_TestCase
     /**
      * test markOff
      * 
-     * @test
-     * @return null
+     * @return @test
      */
     public function testMarkOff()
     {
@@ -59,8 +58,7 @@ class ATM_Context_TemplateTest extends PHPUnit_Framework_TestCase
     /**
      * test sanitize
      * 
-     * @test
-     * @return null
+     * @return @test
      */
     public function testSanitize()
     {

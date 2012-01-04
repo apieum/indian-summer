@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload/Container
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_Container.php
@@ -24,7 +24,7 @@ require_once
  * add rules loaders (behaviours) to abstract class 
  * 
  * @category Automne
- * @package  Autoload/Container
+ * @package  Autoload
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_Container

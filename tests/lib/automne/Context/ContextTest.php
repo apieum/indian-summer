@@ -48,8 +48,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * a context depends on subject, environment and moment
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function aContextDependsOnSubjectEnvironmentAndMoment()
     {
@@ -61,8 +60,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Context subject, environment and moment can change
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function contextSubjectEnvironmentAndMomentCanChange()
     {
@@ -77,8 +75,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Each context as an identity depending on it properties
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function contextIdentityDependsOnContextProperties()
     {
@@ -88,8 +85,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * A context can be described
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function canDescribeAContext()
     {
@@ -101,8 +97,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * When description not exists 'about' return default
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function whenDescriptionNotExistsAboutReturnDefault()
     {
@@ -116,8 +111,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Can delete a description by setting it to null 
      *
-     * @test 
-     * @return null
+     * @return @test
      */
     public function canDeleteADescription()
     {
@@ -132,8 +126,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * 'about' is contextual
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function aboutIsContextual()
     {
@@ -147,8 +140,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Descriptions helps to contextualize strings
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function descriptionsHelpsToContextualizeStrings()
     {
@@ -163,8 +155,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Descriptions helps to contextualize arrays
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function descriptionsHelpsToContextualizeArrays()
     {
@@ -184,8 +175,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Descriptions helps to contextualize objects
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function descriptionsHelpsToContextualizeObjects()
     {
@@ -208,8 +198,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Normalize is recursive
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function normalizeIsRecursive()
     {
@@ -222,8 +211,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * If description not exists return value as is
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function ifDescriptionNotExistsReturnValueAsIs()
     {
@@ -235,8 +223,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Subject, environment, and moment can be contextual
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function subjectEnvironmentAndMomentCanBeContextual()
     {
@@ -250,8 +237,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Context is also defined by behaviours
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function contextIsAlsoDefinedByBehaviours()
     {
@@ -267,8 +253,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * can set a behaviour once with get and default
      * 
-     * @test
-     * @return null
+     * @return @test
      */
     public function canSetABehaviourOnceWithGetAndDefault()
     {
@@ -287,8 +272,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Behaviours contextualize function call
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function behavioursContextualizeFunctionCall()
     {
@@ -315,8 +299,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Behaviours contextualize method call
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function behavioursContextualizeMethodCallArguments()
     {
@@ -352,9 +335,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Behaviours contextualize method call objects
      * 
-     * @test 
-     * @return null
-     * 
+     * @return @test
      */
     public function behavioursContextualizeMethodCallObjects()
     {
@@ -378,8 +359,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * Behaviours contextualize objects construction
      * 
-     * @test 
-     * @return null
+     * @return @test
      */
     public function behavioursContextualizeObjectsConstruction()
     {
@@ -396,8 +376,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * contexts help to share objects
      * 
-     * @test
-     * @return null
+     * @return @test
      */
     public function contextsHelpToShareObjects()
     {
@@ -415,8 +394,7 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
     /**
      * know wether behaviours are classes or not
      * 
-     * @test
-     * @return null
+     * @return @test
      */
     public function knowWetherBehavioursAreClassesOrNot()
     {
@@ -443,7 +421,37 @@ class ATM_ContextTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->context->isClass('behaviour'));
         $this->assertTrue($this->context->isCallable('behaviour'));
     }
-    
+
+    /**
+     * descriptions can be recursives
+     * 
+     * @return @test 
+     */
+    public function recursivesDescriptionsCanBeUsedWithBehaviours()
+    {
+        $args1 = array(array(0,1,2));
+        $args2 = array(array(2,1,0));
+        $this->context->describe('arguments de "Array Object"', $args1);
+        $this->context->describe('arguments de "Fixed Array"', $args2);
+        $this->context->describe('arguments', '{arguments de "{object}"}');
+        $this->context->addBehaviour('Array Object', 'ArrayObject');
+        $this->context->addBehaviour('Fixed Array', array('SplFixedArray','fromArray'));
+        $this->context->describe('object', 'Array Object');
+        $this->assertEquals($args1, $this->context->about('arguments'));
+        $array1 = $this->context->proceed('{object}', '{arguments de "{object}"}');
+        $this->context->describe('object', 'Fixed Array');
+        $this->assertEquals($args2, $this->context->about('arguments'));
+        $array2 = $this->context->proceed('{object}', '{arguments}');
+        $this->assertNotEquals($array1, $array2);
+        try {
+            $array1[] = 3;
+            $array2[] = -1;
+        } catch (RuntimeException $e) {
+            $this->assertTrue(isset($array1[3]));
+            $this->assertFalse(isset($array2[3]));
+        }
+        $this->assertTrue(isset($e));
+    }    
 
 }
 ?>
