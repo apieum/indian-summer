@@ -44,6 +44,15 @@ class ATM_Autoload
         return self::$autoloader;
     }
     /**
+     * Return the context set in autoloader.
+     *  
+     * @return ATM_Autoload_Context
+     */
+    public static function &getContext()
+    {
+        return self::autoloader()->context();
+    }
+    /**
      * Register defaults rules
      * the core use 2 rules :
      * - startWith : load entities that starts with 'atm'
@@ -55,8 +64,7 @@ class ATM_Autoload
      */
     public static function &register($context=null)
     {
-        self::autoloader($context)
-            ->addRule('startWith');
+        self::autoloader($context)->addRule('startWith');
         return self::$autoloader;
     }
     /**
@@ -66,8 +74,7 @@ class ATM_Autoload
      */
     public static function unregister()
     {
-        self::autoloader()
-            ->delRule('startWith');
+        self::autoloader()->delRule('startWith');
         unset(self::$autoloader);
     }
 }

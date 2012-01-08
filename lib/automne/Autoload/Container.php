@@ -82,7 +82,7 @@ class ATM_Autoload_Container extends ATM_Autoload_Container_Abstract
      */
     public function getDefaultRuleFile($ruleName)
     {
-        $default = realpath(__DIR__.'/Rule');
+        $default = realpath(__DIR__.DIRECTORY_SEPARATOR.'Rule');
         $path = $this->context->about('rules path', $default);
         return $path.DIRECTORY_SEPARATOR.ucfirst($ruleName).".".$this->ruleFileExt;
     }

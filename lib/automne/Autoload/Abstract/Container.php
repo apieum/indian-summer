@@ -66,7 +66,7 @@ abstract class ATM_Autoload_Container_Abstract
     public function detach($rule, $params=array())
     {
         $class    = get_class($rule);
-        $ruleId   = $this->getRuleIdFromClass($rule, $params);
+        $ruleId   = $this->getRuleIdFromClass($class, $params);
         return $this->unregister($class, $ruleId);
     }
     /**
