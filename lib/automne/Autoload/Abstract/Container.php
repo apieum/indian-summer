@@ -26,7 +26,7 @@
  * </ul>
  * 
  * @category Abstracts
- * @package  Autoload
+ * @package  Autoload/Container
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_Container_Abstract

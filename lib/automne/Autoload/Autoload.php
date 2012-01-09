@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload
+ * @package  Autoload/Container
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload.php
@@ -16,7 +16,7 @@ require_once 'Container.php';
  * This class stores the main autoload container and load the defaults rules.
  *  
  * @category Automne
- * @package  Autoload
+ * @package  Autoload/Container
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload

@@ -5,7 +5,7 @@
  * PHP version 5.2
  *
  * @category Automne
- * @package  Autoload
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_StartWith.php
@@ -25,7 +25,7 @@ require_once
  * - optionaly a type (otherwise use default) : ex. abstracts, interfaces...  
  * 
  * @category Automne
- * @package  Autoload
+ * @package  Autoload/Rules
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
  * @link     ATM_Autoload_StartWith
@@ -67,17 +67,21 @@ class ATM_Autoload_StartWith_Rule extends ATM_Autoload_RuleCache_Abstract
      */
     public function filter($entity)
     {
-        $result = explode('_', $entity);
-        if (count($result) < 2 
-            || array_shift($result) !== $this->params->getFilter()
-        ) {
+        $result     = explode('_', $entity);
+        $num_result = count($result);
+        $filter     = $this->params->getFilter();
+        if ($num_result < 2 || array_shift($result) !== $filter) {
             return array();
         }
         $return['pack'] = $result[0];
         $last   = array_pop($result);
         $name   = array_pop($result);
-        $subdir = implode(DIRECTORY_SEPARATOR, $result);
-        $path = self::implodePath($this->params->getBaseDir(), $subdir, $last);
+        if ($num_result > 3) {
+            $return['pack'] = self::implodeArrayPath($result);
+        }
+        $path = self::implodePath(
+            $this->params->getBaseDir(), $return['pack'], $last
+        );
         if (is_dir($path)) {
             $return['name'] = $name;
             $return['type'] = $last;
@@ -104,7 +108,7 @@ class ATM_Autoload_StartWith_Rule extends ATM_Autoload_RuleCache_Abstract
             $this->getName($entity).'.php'
         );
         if (file_exists($path)) {
-            return $path;
+            return realpath($path);
         } else {
             throw new LogicException(sprintf("Path '%s' not exists.", $path));
         }

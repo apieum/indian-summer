@@ -159,10 +159,10 @@ class ATM_Autoload_StartWith_RuleTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Name', $this->object->getName($entity));
         $this->assertEquals('Package', $this->object->getPackage($entity));
         $this->assertEquals('lib', $this->object->getType($entity));
-        $entity = $this->object->getParams()->getFilter().'_Name_Type';
+        $entity = $this->object->getParams()->getFilter().'_Package_Type';
         $this->object->cacheKnow($entity);
-        $this->assertEquals('Name', $this->object->getName($entity));
-        $this->assertEquals('Name', $this->object->getPackage($entity));
+        $this->assertEquals('Package', $this->object->getName($entity));
+        $this->assertEquals('Package', $this->object->getPackage($entity));
         $this->assertEquals('Type', $this->object->whois($entity));
     }
     /**
@@ -193,11 +193,27 @@ class ATM_Autoload_StartWith_RuleTest extends PHPUnit_Framework_TestCase
     public function returnNamePackageAndWhoisForKnownClassesWithMoreThanThreeWords()
     {
         $entity = $this->object->getParams()
-            ->getFilter().'_Package_MultiCompoundName_Type';
+            ->getFilter().'_Package_Multi_Compound_Name_Type';
         $this->object->cacheKnow($entity);
-        $this->assertEquals('MultiCompoundName', $this->object->getName($entity));
-        $this->assertEquals('Package', $this->object->getPackage($entity));
+        $this->assertEquals('Name', $this->object->getName($entity));
+        $expPack = str_replace('_', DIRECTORY_SEPARATOR, 'Package_Multi_Compound');
+        $this->assertEquals($expPack, $this->object->getPackage($entity));
         $this->assertEquals('Type', $this->object->whois($entity));
+    }
+    /**
+     * return name package and whois with more than three words
+     * 
+     * @test
+     * @return null
+     */
+    public function returnWhereisForKnownClassesWithMoreThanThreeWords()
+    {
+        $entity = $this->object->getParams()
+            ->getFilter().'_Package_Multi_Compound_Name_Type';
+        $this->object->cacheKnow($entity);
+        $expPath = array('Package', 'Multi', 'Compound', 'Type','Name.php');
+        $expPath = implode(DIRECTORY_SEPARATOR, $expPath);
+        $this->assertContains($expPath, $this->object->whereIs($entity));
     }
 
     /**
@@ -286,7 +302,7 @@ class ATM_Autoload_StartWith_RuleTest extends PHPUnit_Framework_TestCase
         try {
             $this->object->whereIs($entity);
         } catch (LogicException $logicExc) {
-            $except = implode(DIRECTORY_SEPARATOR, array('Name', 'Type','Name.php'));
+            $except = implode(DIRECTORY_SEPARATOR, array('Name', '','Type.php'));
             $this->assertContains($except, $logicExc->getMessage());
         }
         $this->assertNotNull($logicExc);

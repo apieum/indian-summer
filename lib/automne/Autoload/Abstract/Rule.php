@@ -64,8 +64,18 @@ abstract class ATM_Autoload_Rule_Abstract
      */
     public static function implodePath()
     {
-        $args = func_get_args();
-        return implode(DIRECTORY_SEPARATOR, $args);
+        return self::implodeArrayPath(func_get_args());
+    }
+    /**
+     * Return the given argument imploded with directory separator
+     * 
+     * @param array $arrayPath an array with path elements 
+     * 
+     * @return string
+     */
+    public static function implodeArrayPath(array $arrayPath)
+    {
+        return implode(DIRECTORY_SEPARATOR, $arrayPath);
     }
     /**
      * Test whether this object can load the right file 
