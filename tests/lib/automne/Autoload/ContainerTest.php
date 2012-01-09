@@ -12,6 +12,10 @@
  *
  */
 
+$libDir = str_replace('tests'.DIRECTORY_SEPARATOR, '', __DIR__);
+$automnePath =  array($libDir, '..', 'Autoload','Autoload.php');
+require_once implode(DIRECTORY_SEPARATOR, $automnePath);
+ATM_Autoload::register();
 
 /**
  * Test class for ATM_Autoload_Container.
@@ -38,10 +42,6 @@ class ATM_Autoload_ContainerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
-        $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
-        $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
-        include_once $baseDir.$relDir.'Container.php';
         $this->object = new ATM_Autoload_Container();
     }
 

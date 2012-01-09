@@ -12,6 +12,10 @@
  *
  */
 
+$libDir = str_replace('tests'.DIRECTORY_SEPARATOR, '', __DIR__);
+$automnePath =  array($libDir, '..', '..', 'Autoload','Autoload.php');
+require_once implode(DIRECTORY_SEPARATOR, $automnePath);
+ATM_Autoload::register();
 
 /**
  * Test class for ATM_Autoload_StartWith_Rule.
@@ -43,7 +47,6 @@ class ATM_Autoload_StartWith_RuleTest extends PHPUnit_Framework_TestCase
         $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
         $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
         $baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
-        include_once $baseDir.$relDir.'StartWith.php';
         $this->baseDir = $baseDir.'lib'.DIRECTORY_SEPARATOR.'automne';
         $this->libDir  = $baseDir.$relDir;
         $this->object  = new ATM_Autoload_StartWith_Rule(__DIR__, 'test', 'lib');
@@ -266,6 +269,27 @@ class ATM_Autoload_StartWith_RuleTest extends PHPUnit_Framework_TestCase
         $this->object->load($entity);
         $this->assertTrue(class_exists($entity));
         
+    }
+    /**
+     * whereIs throw a logic exception if a file not exists
+     * 
+     * @return @test
+     */
+    public function throwLogicExceptionIfAFileNotExists()
+    {
+        $entity = $this->object->getParams()->getFilter().'_Package_Type';
+        $this->object->cacheKnow($entity);
+        $except=implode(DIRECTORY_SEPARATOR, array('Package', 'Type','Package.php'));
+        $this->assertContains($except, $this->object->whereIs($entity));
+        $entity = $this->object->getParams()->getFilter().'_Name_Type';
+        $this->object->cacheKnow($entity);
+        try {
+            $this->object->whereIs($entity);
+        } catch (LogicException $logicExc) {
+            $except = implode(DIRECTORY_SEPARATOR, array('Name', 'Type','Name.php'));
+            $this->assertContains($except, $logicExc->getMessage());
+        }
+        $this->assertNotNull($logicExc);
     }
     
 }

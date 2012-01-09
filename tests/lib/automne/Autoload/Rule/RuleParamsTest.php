@@ -11,11 +11,10 @@
  * @link     ATM_Autoload_RuleParams.php
  *
  */
-$dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
-$relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
-$baseDir=implode('tests'.DIRECTORY_SEPARATOR, $dirs);
-
-require_once $baseDir.$relDir.'RuleParams.php';
+$libDir = str_replace('tests'.DIRECTORY_SEPARATOR, '', __DIR__);
+$automnePath =  array($libDir, '..', '..', 'Autoload','Autoload.php');
+require_once implode(DIRECTORY_SEPARATOR, $automnePath);
+ATM_Autoload::register();
 /**
  * Tests for ATM_Autoload_RuleParams
  * 
@@ -42,8 +41,9 @@ class ATM_Autoload_RuleParamsTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        global $baseDir;
-        $this->baseDir = realpath($baseDir);
+        $dirs=explode('tests'.DIRECTORY_SEPARATOR, __DIR__);
+        $relDir=array_pop($dirs).DIRECTORY_SEPARATOR;
+        $this->baseDir =realpath(implode('tests'.DIRECTORY_SEPARATOR, $dirs));
         $this->object = new ATM_Autoload_RuleParams(__DIR__, '@.*@', 'lib');
     }
 

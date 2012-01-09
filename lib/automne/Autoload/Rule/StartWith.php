@@ -103,7 +103,11 @@ class ATM_Autoload_StartWith_Rule extends ATM_Autoload_RuleCache_Abstract
             $this->whoIs($entity),
             $this->getName($entity).'.php'
         );
-        return (string) realpath($path);
+        if (file_exists($path)) {
+            return $path;
+        } else {
+            throw new LogicException(sprintf("Path '%s' not exists.", $path));
+        }
     }
     /**
      * return the type of an entity
