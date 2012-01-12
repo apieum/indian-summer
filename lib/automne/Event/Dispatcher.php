@@ -14,7 +14,7 @@
 
 /**
  * Contains event listeners bound within events they observe
- * 
+ *
  * @category Automne
  * @package  Event
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
@@ -29,16 +29,16 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     protected $allEvents= array();
     protected $events   = array();
     /**
-     * return an array of listeners from given argument 
-     * 
+     * return an array of listeners from given argument
+     *
      * @param array|object $listeners object or list of objects with fire method
-     * 
+     *
      * @return array
      */
     protected function listListeners($listeners)
     {
         if (!is_array($listeners)) {
-            return $this->accept($listeners) ? array($listeners) : array(); 
+            return $this->accept($listeners) ? array($listeners) : array();
         }
         $listeners = array_filter($listeners, array($this, 'accept'));
         return self::arrayUniqueValues($listeners);
@@ -46,9 +46,9 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     /**
      * return an array with unique values
      * keys are modified
-     * 
+     *
      * @param array $array the array to deduplicate
-     * 
+     *
      * @return array
      */
     public static function arrayUniqueValues(array $array)
@@ -63,9 +63,9 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Return if a listener can be accepted
-     * 
+     *
      * @param object $listener a listener to test
-     * 
+     *
      * @return bool
      */
     public function accept($listener)
@@ -74,13 +74,13 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Fire event $event on all binded listeners
-     * 
+     *
      * @param string $event  the event to fire
      * @param array  $params parameters to send to listener
-     * 
+     *
      * @return object this for chaining
      */
-    public function trigger($event, $params=array()) 
+    public function trigger($event, $params=array())
     {
         $listeners = $this->getListenersFor($event);
         foreach ($listeners as $listener) {
@@ -93,9 +93,9 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Attach an event listener for all events
-     *  
-     * @param array|object $listeners event listener or a list of event listener 
-     * 
+     *
+     * @param array|object $listeners event listener or a list of event listener
+     *
      * @return object this for chaining
      */
     public function bindAll($listeners)
@@ -107,10 +107,10 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Attach an listener for events $events
-     *  
-     * @param array|object $listeners event listener or a list of event listener 
+     *
+     * @param array|object $listeners event listener or a list of event listener
      * @param array        $events    a list of event
-     * 
+     *
      * @return object this for chaining
      */
     public function bind($listeners, $events=array())
@@ -122,9 +122,9 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Detach event listeners from all events
-     *  
-     * @param array|object $listeners event listener or a list of event listener 
-     * 
+     *
+     * @param array|object $listeners event listener or a list of event listener
+     *
      * @return object this for chaining
      */
     public function unbindAll($listeners)
@@ -136,10 +136,10 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Detach listeners for events $events
-     *  
-     * @param array|object $listeners event listener or a list of event listener 
+     *
+     * @param array|object $listeners event listener or a list of event listener
      * @param array        $events    a list of event
-     * 
+     *
      * @return object this for chaining
      */
     public function unbind($listeners, $events=array())
@@ -154,9 +154,9 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
     }
     /**
      * Return if a listener is bound to any event
-     * 
+     *
      * @param string $listener an event listener
-     * 
+     *
      * @return bool
      */
     public function contains($listener)
@@ -169,10 +169,10 @@ class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
         return $bound;
     }
     /**
-     * Return all listeners for a given event 
-     * 
+     * Return all listeners for a given event
+     *
      * @param string $event the event name
-     * 
+     *
      * @return array a list of objects Ids bound to event $event
      */
     public function getListenersFor($event)
