@@ -22,7 +22,7 @@
  * @link     ATM_Event_Dispatcher
  *
  */
-class ATM_Event_Dispatcher
+class ATM_Event_Dispatcher implements ATM_Event_Dispatcher_Interface
 {
 
     protected $listeners= array();
