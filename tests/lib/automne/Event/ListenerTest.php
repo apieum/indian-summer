@@ -184,8 +184,8 @@ class ATM_Event_ListenerTest extends PHPUnit_Framework_TestCase
      */
     public function canUseInheritanceToSetDefaultEventsActions()
     {
-        include_once 'UcFirst.php';
-        $listener = new UcFirst();
+        include_once 'UcFirstListener.php';
+        $listener = new UcFirstListener();
         $result   = $listener->fire('uppercase', array('a word'));
         $this->assertEquals('A Word', $result);
         $result   = $listener->fire('uc first', array('a word'));

@@ -1,6 +1,6 @@
 <?php
 /**
- * File UcFirst.php
+ * File UcFirstListener.php
  *
  * PHP version 5.2
  *
@@ -8,7 +8,7 @@
  * @package  Event
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     UcFirst.php
+ * @link     UcFirstListener.php
  *
  */
 /**
@@ -18,10 +18,10 @@
  * @package  Event
  * @author   Gregory Salvan <gregory.salvan@apieum.com>
  * @license  GPL v.2
- * @link     UcFirst
+ * @link     UcFirstListener
  *
  */
-class UcFirst extends ATM_Event_Listener
+class UcFirstListener extends ATM_Event_Listener
 {
     /**
      * Return ucfirst of $string
